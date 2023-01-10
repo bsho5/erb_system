@@ -5,6 +5,7 @@ import 'package:erb_system/resources/assets_manager.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/resources/value_manager.dart';
+import 'package:erb_system/utils/city.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
 import 'package:erb_system/view/home/components/default_container.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
@@ -290,7 +291,7 @@ class _AddOrderState extends State<AddOrder> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Container(
+                                       Container(
                                       width:
                                           MediaQuery.of(context).size.width <=
                                                   917
@@ -306,44 +307,29 @@ class _AddOrderState extends State<AddOrder> {
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: Center(
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            icon: const Icon(
-                                                Icons.arrow_drop_down_outlined,
-                                                color: Color(0xff82225E)),
-                                            items: [
-                                              "الكل",
-                                            ]
-                                                .map((e) => DropdownMenuItem(
-                                                      value: e,
-                                                      child: Text(
-                                                        e,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ))
-                                                .toList(),
-                                            value: city,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                city = val;
-                                              });
-                                            },
-                                            hint: const Text(
-                                              "المدينة",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            dropdownColor: Colors.white,
-                                            style: const TextStyle(
-                                                color: Color(0xff82225E)),
-                                          ),
-                                        ),
-                                      ),
+                                        child:      DropdownSearch<String>(
+                                    clearButtonProps:
+                                        const ClearButtonProps(isVisible: true),
+                                    popupProps: PopupProps.menu(
+                                      showSearchBox: true,
+                                      showSelectedItems: true,
+                                      // disabledItemFn: (String s) =>
+                                      //     s.startsWith('I'),
+                                    ),
+                                    items: governorates,
+                                    dropdownDecoratorProps:
+                                        DropDownDecoratorProps(
+                                      dropdownSearchDecoration: InputDecoration(
+                                          hintText: "المحافظة",
+                                          border: InputBorder.none),
+                                    ),
+                                    onChanged: (v) {
+                                      setState(() {
+                                         governorate= v;
+                                      });
+                                    },
+                                  ),
+                              ),
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -364,48 +350,39 @@ class _AddOrderState extends State<AddOrder> {
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: Center(
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            icon: const Icon(
-                                                Icons.arrow_drop_down_outlined,
-                                                color: Color(0xff82225E)),
-                                            items: [
-                                              "الكل",
-                                            ]
-                                                .map((e) => DropdownMenuItem(
-                                                      value: e,
-                                                      child: Text(
-                                                        e,
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ))
-                                                .toList(),
-                                            value: governorate,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                governorate = val;
-                                              });
-                                            },
-                                            hint: const Text(
-                                              "المحافظة",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            dropdownColor: Colors.white,
-                                            style: const TextStyle(
-                                                color: Color(0xff82225E)),
-                                          ),
-                                        ),
+                                        child:  DropdownSearch<String>(
+                                      clearButtonProps: const ClearButtonProps(
+                                          isVisible: true),
+                                      popupProps: PopupProps.menu(
+                                        showSearchBox: true,
+                                        showSelectedItems: true,
+                                        searchFieldProps: TextFieldProps(
+                                            cursorColor: ColorManager.primary),
+                                        // disabledItemFn: (String s) =>
+                                        //     s.startsWith('I'),
                                       ),
+                                      items: governorateCities(
+                                              governorate ?? '') ??
+                                          [],
+                                      dropdownDecoratorProps:
+                                          DropDownDecoratorProps(
+                                        dropdownSearchDecoration:
+                                            InputDecoration(
+                                                hintText: "المدينة",
+                                                border: InputBorder.none),
+                                      ),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          city = v;
+                                        });
+                                      },
+                                    ),
+                                   ),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
+                                 
                                   ],
                                 ),
                                 Column(
