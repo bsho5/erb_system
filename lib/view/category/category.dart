@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:erb_system/controller/category/category_controller.dart';
 import 'package:erb_system/resources/assets_manager.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/size_config.dart';
+import 'package:erb_system/utils/search.dart';
 import 'package:erb_system/view/auth/component/text_fom_feild.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
 import 'package:erb_system/view/home/components/botton.dart';
@@ -27,7 +29,7 @@ class _CategoriesState extends State<Categories> {
   int? selectedIndex;
   TextEditingController controller1 = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-
+  int ordersNumber = 25;
   List data = [
     {
       "1": "١/١٢.٢٠٢٢",
@@ -61,6 +63,44 @@ class _CategoriesState extends State<Categories> {
     "نوع الصنف",
     "اسم الصنف",
   ];
+  List<String> dbDataId = [];
+  List<String> dataId = [];
+  Map<String, Map<String, dynamic>> result = {};
+  double total = 0;
+
+  void performSearch(String query) {
+    setState(() {
+      dataId = searchByWord(query, result);
+      print(dataId);
+      total = dataId.fold(
+          0,
+          (previousValue, element) =>
+              previousValue +
+              
+                  result[element]?['openingbalance'] * result[element]?['price']);
+    });
+  }
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('Materials')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              setState(() {
+                result[element.id] = element.data();
+                
+                dbDataId.add(element.id);
+                dataId.add(element.id);
+                print(element.data()['openingbalance']);
+                print(element.data()['price']);
+                total = total +
+                    (element.data()['openingbalance'] *
+                       element.data()['price']);
+              });
+            }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +210,16 @@ class _CategoriesState extends State<Categories> {
                                       perFix: const Icon(Icons.search),
                                       hint: '',
                                       label: '',
+                                      onChanged: (v) {
+                                        setState(() {
+                                          if (v.isNotEmpty) {
+                                            performSearch(v.toCapitalized());
+                                            ordersNumber = dataId.length;
+                                          } else {
+                                            dataId = dbDataId;
+                                          }
+                                        });
+                                      },
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -192,7 +242,7 @@ class _CategoriesState extends State<Categories> {
                               future: pro.getMaterials(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
-                                  List Data = snapshot.data as List;
+                                  List categoryData = snapshot.data as List;
                                   return Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
@@ -203,7 +253,7 @@ class _CategoriesState extends State<Categories> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: List.generate(
-                                              Data.length,
+                                              dataId.take(ordersNumber).length,
                                               (index) => Column(
                                                     children: [
                                                       SizedBox(
@@ -255,15 +305,16 @@ class _CategoriesState extends State<Categories> {
                                             ? getProportionateScreenWidth(8)
                                             : getProportionateScreenWidth(10),
                                         color: ColorManager.second,
-                                        rows:
-                                            Data.map((data) => DataRow(cells: [
+                                        rows: dataId
+                                            .take(ordersNumber)
+                                            .map((data) => DataRow(cells: [
                                                   DataCell(Image.asset(
                                                     ImageAssets.iconDropDown23,
                                                     width: 30,
                                                     height: 30,
                                                   )),
                                                   DataCell(Text(
-                                                    '${data['openingbalance'] * data['price']}',
+                                                    '${result[data]!['openingbalance'] * result[data]!['price']}',
                                                     style: style,
                                                   )),
                                                   DataCell(Text(
@@ -271,16 +322,19 @@ class _CategoriesState extends State<Categories> {
                                                     style: style,
                                                   )),
                                                   DataCell(Text(
-                                                    data['openingbalance']
+                                                    result[data]![
+                                                            'openingbalance']
                                                         .toString(),
                                                     style: style,
                                                   )),
                                                   DataCell(Text(
-                                                    data['productionline'],
+                                                    result[data]![
+                                                        'productionline'],
                                                     style: style,
                                                   )),
                                                   DataCell(Text(
-                                                    data['measurement'],
+                                                    result[data]![
+                                                        'measurement'],
                                                     style: style,
                                                   )),
                                                   DataCell(
@@ -288,7 +342,8 @@ class _CategoriesState extends State<Categories> {
                                                       width:
                                                           getProportionateScreenWidth(
                                                               30),
-                                                      child: Text(data['type'],
+                                                      child: Text(
+                                                          result[data]!['type'],
                                                           overflow: TextOverflow
                                                               .ellipsis,
                                                           maxLines: 3,
@@ -300,14 +355,16 @@ class _CategoriesState extends State<Categories> {
                                                       width:
                                                           getProportionateScreenWidth(
                                                               30),
-                                                      child: Text(data['name'],
+                                                      child: Text(
+                                                          result[data]!['name'],
                                                           overflow: TextOverflow
                                                               .ellipsis,
                                                           maxLines: 3,
                                                           style: style),
                                                     ),
                                                   ),
-                                                ])).toList(),
+                                                ]))
+                                            .toList(),
                                       ),
                                     ],
                                   );
@@ -318,12 +375,66 @@ class _CategoriesState extends State<Categories> {
                           const SizedBox(
                             height: 30,
                           ),
-                          Botton(
-                            bgColor: Colors.black,
-                            color: Colors.white,
-                            title: 'المزيد',
-                            onTap: () {},
-                          )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 60),
+                                child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 40),
+                                    decoration: BoxDecoration(
+                                      color: ordersNumber < dataId.length
+                                          ? Color(0xff82225E)
+                                          : Colors.grey,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: TextButton(
+                                      child: Text(
+                                        'المزيد',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          if (ordersNumber < dataId.length) {
+                                            ordersNumber = ordersNumber + 5;
+                                          }
+                                        });
+                                      },
+                                    )),
+                              ),
+                              ordersNumber > 25
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(left: 60),
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 40),
+                                          decoration: BoxDecoration(
+                                            color: ordersNumber < dataId.length
+                                                ? Color(0xff82225E)
+                                                : Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          child: TextButton(
+                                            child: Text(
+                                              'اقل',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                ordersNumber = ordersNumber - 5;
+                                              });
+                                            },
+                                          )),
+                                    )
+                                  : SizedBox(),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
                         ],
                       ),
                     ),

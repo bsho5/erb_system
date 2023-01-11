@@ -1,6 +1,7 @@
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class DefaultBotton extends StatelessWidget {
   DefaultBotton(
@@ -21,15 +22,20 @@ class DefaultBotton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () => onTap(),
-        style: ButtonStyle(
-
-            backgroundColor:
-                MaterialStateProperty.all(const Color(0xff82225E))),
-        child: Padding(
-          padding: EdgeInsets.only(top: top!,right: right!,left: right!),
-          child: Text(title, style: getSemiBoldStyleAR(color: color,fontSize:getProportionateScreenWidth(4))),
-        ));
+    return Container(
+      height: 43,
+      width: 70,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color:  Color(0xff82225E),
+      ),
+      
+      child: Center(
+        child: GestureDetector(
+            onTap: () => onTap(),
+            
+            child: Text(title, style: getSemiBoldStyleAR(color: color,fontSize:15))),
+      ),
+    );
   }
 }
