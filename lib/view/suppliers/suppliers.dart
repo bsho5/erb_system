@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:erb_system/controller/suppliers/add_suppliers.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/size_config.dart';
+import 'package:erb_system/utils/search.dart';
 import 'package:erb_system/view/auth/component/text_fom_feild.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
 import 'package:erb_system/view/home/components/default_container.dart';
 import 'package:erb_system/view/home/components/default_table.dart';
 import 'package:erb_system/view/home/components/drop_down.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
+import 'package:erb_system/view/suppliers/add_sup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qlevar_router/qlevar_router.dart';
@@ -55,6 +58,34 @@ class _SuppliersState extends State<Suppliers> {
     "رقم الهاتف",
     "اسم المورد",
   ];
+  List<String> dbDataId = [];
+  List<String> dataId = [];
+  double total = 0;
+  Map<String, Map<String, dynamic>> result = {};
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseFirestore.instance
+        .collection("suppliers")
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              setState(() {
+                result[element.id] = element.data();
+                dbDataId.add(element.id);
+                dataId.add(element.id);
+              });
+            }));
+  }
+
+  void performSearch(String query) {
+    setState(() {
+      dataId = searchByWord(
+        query,
+        result,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +135,15 @@ class _SuppliersState extends State<Suppliers> {
                                   ),
                                   hint: '',
                                   label: '',
+                                  onChanged: (v) {
+                                    setState(() {
+                                      if (v.isNotEmpty) {
+                                        performSearch(v);
+                                      } else {
+                                        dataId = dbDataId;
+                                      }
+                                    });
+                                  },
                                   onTab: () {},
                                   validate: () {},
                                   onSave: () {},
@@ -132,7 +172,7 @@ class _SuppliersState extends State<Suppliers> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: List.generate(
-                                              sData.length,
+                                              dataId.length,
                                               (index) => Column(
                                                     children: [
                                                       SizedBox(
@@ -151,7 +191,6 @@ class _SuppliersState extends State<Suppliers> {
                                                                 : chose2,
                                                             onchanged: () =>
                                                                 (val) {
-                                                              print(index);
                                                               setState(() {
                                                                 selectedIndex =
                                                                     index;
@@ -166,7 +205,28 @@ class _SuppliersState extends State<Suppliers> {
                                                                 QR.to(
                                                                     '/sup_money_details');
                                                               } else if (chose1 ==
-                                                                  "تعديل المورد") {}
+                                                                  "تعديل المورد") {
+                                                                print(result[dataId[index]]);
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (BuildContext
+                                                                                context) =>
+                                                                            AddSup(
+                                                                              name: result[dataId[index]]
+                                                                              ?['name'].toString(),
+                                                                              subCategory:result[dataId[index]]
+                                                                              ?['category'].toString(),
+                                                                              supRating: result[dataId[index]]
+                                                                              ?['supplierrate'].toString(),
+                                                                              address: result[dataId[index]]
+                                                                              ?['address'].toString(),
+                                                                              phone: result[dataId[index]]
+                                                                              ?['phonenumber'].toString(),
+                                                                              priceRating: result[dataId[index]]
+                                                                              ?['pricerate'].toString(),
+                                                                            )));
+                                                              }
                                                             },
                                                             label: 'خيارات',
                                                             foColor:
@@ -189,30 +249,31 @@ class _SuppliersState extends State<Suppliers> {
                                         columnData: columnData,
                                         size: getProportionateScreenWidth(7),
                                         color: ColorManager.second,
-                                        rows: sData
+                                        rows: dataId
                                             .map((data) => DataRow(cells: [
                                                   DataCell(Text(
                                                     '',
                                                   )),
                                                   DataCell(Text(
-                                                    data['balance'].toString(),
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['category'],
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['address'],
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['phonenumber']
+                                                    result[data]!['balance']
                                                         .toString(),
                                                     style: style,
                                                   )),
                                                   DataCell(Text(
-                                                    data['name'],
+                                                    result[data]!['category'],
+                                                    style: style,
+                                                  )),
+                                                  DataCell(Text(
+                                                    result[data]!['address'],
+                                                    style: style,
+                                                  )),
+                                                  DataCell(Text(
+                                                    result[data]!['phonenumber']
+                                                        .toString(),
+                                                    style: style,
+                                                  )),
+                                                  DataCell(Text(
+                                                    result[data]!['name'],
                                                     style: style,
                                                   )),
                                                 ]))

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:erb_system/controller/suppliers/add_suppliers.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
@@ -10,7 +11,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddSup extends StatefulWidget {
-  const AddSup({Key? key}) : super(key: key);
+  AddSup(
+      {Key? key,
+      this.name,
+      this.priceRating,
+      this.supRating,
+      this.address,
+      this.phone,
+      this.subCategory})
+      : super(key: key);
+  String? name;
+  String? priceRating;
+  String? supRating;
+  String? address;
+  String? phone;
+  String? subCategory;
+
+  bool isEdit = false;
+  bool isFromAnotherPage = false;
 
   @override
   State<AddSup> createState() => _AddSupState();
@@ -24,6 +42,23 @@ class _AddSupState extends State<AddSup> {
   TextEditingController controller4 = TextEditingController();
   TextEditingController controller5 = TextEditingController();
   TextEditingController controller6 = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(controller1.text);
+    print(controller2.text);
+    print(controller3.text);
+    print(controller4.text);
+    print(controller5.text);
+    print(controller6.text);
+    controller1.text = widget.address ?? '';
+    controller2.text = widget.subCategory ?? '';
+    controller3.text = widget.name ?? '';
+    controller4.text = widget.priceRating ?? '';
+    controller5.text = widget.supRating ?? '';
+    controller6.text = widget.phone ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,15 +280,28 @@ class _AddSupState extends State<AddSup> {
                       ),
                       Botton(
                         color: ColorManager.white,
-                        title: 'اضافه',
-                        onTap: () {
-                          pro.addSupplier(
-                              controller1.text,
-                              controller2.text,
-                              controller3.text,
-                              controller6.text,
-                              double.parse(controller4.text),
-                              double.parse(controller5.text));
+                        title: widget.isEdit ? 'اضافه' : 'تعديل',
+                        onTap: () async {
+                          await FirebaseFirestore.instance
+                              .collection('suppliers')
+                              .doc(controller3.text)
+                              .set({
+                            'address': controller1.text,
+                            'balance': 0,
+                            'category': controller2.text,
+                            'name': controller3.text,
+                            "phonenumber": controller6.text,
+                            "pricerate": double.parse(controller4.text),
+                            "supplierrate": double.parse(controller5.text),
+                            'date': DateTime.now().toIso8601String().toString()
+                          });
+                          // pro.addSupplier(
+                          //     controller1.text,
+                          //     controller2.text,
+                          //     controller3.text,
+                          //     controller6.text,
+                          //     double.parse(controller4.text),
+                          //     double.parse(controller5.text));
                           controller1.clear();
                           controller2.clear();
                           controller3.clear();
