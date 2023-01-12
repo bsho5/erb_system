@@ -90,14 +90,14 @@ class _CategoriesState extends State<Categories> {
         .then((value) => value.docs.forEach((element) {
               setState(() {
                 result[element.id] = element.data();
-                
+
                 dbDataId.add(element.id);
                 dataId.add(element.id);
                 print(element.data()['openingbalance']);
                 print(element.data()['price']);
                 total = total +
                     (element.data()['openingbalance'] *
-                       element.data()['price']);
+                        element.data()['price']);
               });
             }));
   }
@@ -152,12 +152,12 @@ class _CategoriesState extends State<Categories> {
                                       controller: controller1,
                                       hint: '',
                                       label: '',
-                                       
                                       onChanged: (v) {
                                         setState(() {
                                           if (v.isNotEmpty) {
                                             performSearch(v.toCapitalized());
-                                            ordersNumber = dataId.length;
+                                           
+                                            // ordersNumber = dataId.length;
                                           } else {
                                             dataId = dbDataId;
                                           }
@@ -225,7 +225,7 @@ class _CategoriesState extends State<Categories> {
                                         setState(() {
                                           if (v.isNotEmpty) {
                                             performSearch(v.toCapitalized());
-                                            ordersNumber = dataId.length;
+                                            // ordersNumber = dataId.length;
                                           } else {
                                             dataId = dbDataId;
                                           }

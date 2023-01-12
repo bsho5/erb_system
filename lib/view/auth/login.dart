@@ -124,8 +124,7 @@ class _LoginState extends State<Login> {
                                 email: emailController.text,
                                 password: passwordController.text);
                           });
-                          print(emailController.text);
-                          print(passwordController.text);
+                         
                         },
                       )),
                   //  Row(
