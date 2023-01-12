@@ -152,6 +152,17 @@ class _CategoriesState extends State<Categories> {
                                       controller: controller1,
                                       hint: '',
                                       label: '',
+                                       
+                                      onChanged: (v) {
+                                        setState(() {
+                                          if (v.isNotEmpty) {
+                                            performSearch(v.toCapitalized());
+                                            ordersNumber = dataId.length;
+                                          } else {
+                                            dataId = dbDataId;
+                                          }
+                                        });
+                                      },
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -248,7 +259,7 @@ class _CategoriesState extends State<Categories> {
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 71),
+                                        padding: const EdgeInsets.only(top: 85),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
@@ -290,7 +301,7 @@ class _CategoriesState extends State<Categories> {
                                                                     .primary,
                                                           )),
                                                       const SizedBox(
-                                                        height: 10,
+                                                        height: 7,
                                                       )
                                                     ],
                                                   )),

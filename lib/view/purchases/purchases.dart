@@ -1,14 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:erb_system/controller/controller.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/size_config.dart';
+import 'package:erb_system/utils/search.dart';
 import 'package:erb_system/view/auth/component/text_fom_feild.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
 import 'package:erb_system/view/home/components/default_container.dart';
 import 'package:erb_system/view/home/components/default_table.dart';
 import 'package:erb_system/view/home/components/drop_down.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
+import 'package:erb_system/view/purchases/add_purchase_bill.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
@@ -82,7 +86,6 @@ class _PurchasesState extends State<Purchases> {
     "تاريخ الطلب",
     "نوع الدفع",
     "المدفوع",
-    "حاله الشراء",
     "اسم المورد",
     "اجمالي الفاتوره",
     "سعر الوحده",
@@ -104,6 +107,44 @@ class _PurchasesState extends State<Purchases> {
         orderDate = pickedDate;
       });
     }
+  }
+
+  int ordersNumber = 25;
+  List<String> dbDataId = [];
+  List<String> dataId = [];
+  double total = 0;
+  Map<String, Map<String, dynamic>> result = {};
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseFirestore.instance
+        .collection('actions')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              setState(() {
+                result[element.id] = element.data();
+                if (element.data()['name'] == 'Purchase') {
+                  dbDataId.add(element.id);
+                  dataId.add(element.id);
+                }
+
+                // total = total + int.parse(element.data()['amount']);
+              });
+            }));
+  }
+
+  void performSearch(String query) {
+    setState(() {
+      dataId = searchByWord(
+        query,
+        result,
+      );
+      // total = dataId.fold(
+      //     0,
+      //     (previousValue, element) =>
+      //         previousValue + int.parse(result[element]?['amount']));
+    });
   }
 
   @override
@@ -137,59 +178,59 @@ class _PurchasesState extends State<Purchases> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    'التاريخ',
-                                    style: getSemiBoldStyle(
-                                        color: ColorManager.black),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  SizedBox(
-                                    width: getProportionateScreenWidth(40),
-                                    height: 60,
-                                    child: ElevatedButton(
-                                      onPressed: () => _selectDate(context),
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.white)),
-                                      child: Text(
-                                        "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
-                                        style: TextStyle(
-                                          color: ColorManager.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: getProportionateScreenWidth(20),
-                              ),
-                              Container(
-                                width: getProportionateScreenWidth(50),
-                                height: getProportionateScreenHeight(90),
-                                padding: const EdgeInsets.only(top: 35),
-                                child: dropDown(
-                                  const ['تم الطلب', 'تم الاستلام'],
-                                  selectTalab: chose,
-                                  onchanged: () => (val) {
-                                    setState(() {
-                                      chose = val;
-                                    });
-                                  },
-                                  label: 'حاله الشراء',
-                                  foColor: Colors.white,
-                                  bgColor: ColorManager.primary,
-                                  dpColor: ColorManager.primary,
-                                ),
-                              ),
-                              SizedBox(
-                                width: getProportionateScreenWidth(20),
-                              ),
+                              // Column(
+                              //   children: [
+                              //     Text(
+                              //       'التاريخ',
+                              //       style: getSemiBoldStyle(
+                              //           color: ColorManager.black),
+                              //     ),
+                              //     const SizedBox(
+                              //       height: 10,
+                              //     ),
+                              //     SizedBox(
+                              //       width: getProportionateScreenWidth(40),
+                              //       height: 60,
+                              //       child: ElevatedButton(
+                              //         onPressed: () => _selectDate(context),
+                              //         style: ButtonStyle(
+                              //             backgroundColor:
+                              //                 MaterialStateProperty.all(
+                              //                     Colors.white)),
+                              //         child: Text(
+                              //           "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
+                              //           style: TextStyle(
+                              //             color: ColorManager.black,
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              // SizedBox(
+                              //   width: getProportionateScreenWidth(20),
+                              // ),
+                              // Container(
+                              //   width: getProportionateScreenWidth(50),
+                              //   height: getProportionateScreenHeight(90),
+                              //   padding: const EdgeInsets.only(top: 35),
+                              //   child: dropDown(
+                              //     const ['تم الطلب', 'تم الاستلام'],
+                              //     selectTalab: chose,
+                              //     onchanged: () => (val) {
+                              //       setState(() {
+                              //         chose = val;
+                              //       });
+                              //     },
+                              //     label: 'حاله الشراء',
+                              //     foColor: Colors.white,
+                              //     bgColor: ColorManager.primary,
+                              //     dpColor: ColorManager.primary,
+                              //   ),
+                              // ),
+                              // SizedBox(
+                              //   width: getProportionateScreenWidth(20),
+                              // ),
                               Column(
                                 children: [
                                   Text(
@@ -207,6 +248,16 @@ class _PurchasesState extends State<Purchases> {
                                       controller: controller1,
                                       hint: '',
                                       label: '',
+                                      onChanged: (v) {
+                                        setState(() {
+                                          print(v);
+                                          if (v.isNotEmpty) {
+                                            performSearch(v);
+                                          } else {
+                                            dataId = dbDataId;
+                                          }
+                                        });
+                                      },
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -234,7 +285,7 @@ class _PurchasesState extends State<Purchases> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: List.generate(
-                                      data.length,
+                                      dataId.take(ordersNumber).length,
                                       (index) => Column(
                                             children: [
                                               SizedBox(
@@ -260,6 +311,43 @@ class _PurchasesState extends State<Purchases> {
                                                           'تاكيد مرتجع') {
                                                         QR.to(
                                                             '/confirm_back_purchase');
+                                                      } else if (val ==
+                                                          'تفاصيل') {
+                                                                Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (BuildContext
+                                                                        context) =>  AddPurchaseBill(
+                                                          status: '',
+                                                          isEdit: true,
+                                                          date: DateFormat('yyyy-MM-dd')
+                                                    .format(((result[dataId[index]]
+                                                                              ?[
+                                                                'recevingDate'])
+                                                            as Timestamp)
+                                                        .toDate())
+                                                    .toString(),
+                                                          supName: result[dataId[index]]
+                                                                              ?['suppliername']
+                                                  .toString(),
+                                                          remainingBalance: '',
+                                                          paid: result[dataId[index]]
+                                                                              ?['podownpayment']
+                                                  .toString(),
+                                                          shipping: result[dataId[index]]
+                                                                              ?['poshippingfees']
+                                                  .toString(),
+                                                          treasury: result[dataId[index]]
+                                                                              ?['treasury'],
+                                                          image: result[dataId[index]]
+                                                                              ?['image'],
+                                                          id: result[dataId[index]]
+                                                                              ?['actionreference'],
+                                                        )
+                                                      
+                                                                    ));
+
+                                                      
                                                       }
                                                       setState(() {
                                                         selectedIndex = index;
@@ -284,35 +372,65 @@ class _PurchasesState extends State<Purchases> {
                                 columnData: columnData,
                                 size: getProportionateScreenWidth(0.8),
                                 color: ColorManager.second,
-                                rows: data
+                                rows: dataId
                                     .map((data) => DataRow(cells: [
                                           DataCell(
-                                            Text(data['13'], style: style),
+                                            Text(
+                                                DateFormat('yyyy-MM-dd')
+                                                    .format(((result[data]?[
+                                                                'recevingDate'])
+                                                            as Timestamp)
+                                                        .toDate())
+                                                    .toString(),
+                                                style: style),
                                           ),
-                                          DataCell(
-                                              Text(data['12'], style: style)),
-                                          DataCell(
-                                              Text(data['11'], style: style)),
-                                          DataCell(
-                                              Text(data['10'], style: style)),
-                                          DataCell(
-                                              Text(data['9'], style: style)),
-                                          DataCell(
-                                              Text(data['8'], style: style)),
-                                          DataCell(
-                                              Text(data['7'], style: style)),
-                                          DataCell(
-                                              Text(data['6'], style: style)),
-                                          DataCell(
-                                              Text(data['5'], style: style)),
-                                          DataCell(
-                                              Text(data['4'], style: style)),
-                                          DataCell(
-                                              Text(data['3'], style: style)),
-                                          DataCell(
-                                              Text(data['2'], style: style)),
-                                          DataCell(
-                                              Text(data['1'], style: style)),
+                                          DataCell(Text(
+                                              DateFormat('yyyy-MM-dd')
+                                                  .format(((result[data]
+                                                              ?['date'])
+                                                          as Timestamp)
+                                                      .toDate())
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['treasury'],
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['podownpayment']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['suppliername']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['totalmaterialcost']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['materialcost']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['measurement']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['quantity']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['details']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['actiontype']
+                                                  .toString(),
+                                              style: style)),
+                                          DataCell(Text(
+                                              result[data]!['actionreference']
+                                                  .toString(),
+                                              style: style)),
                                         ]))
                                     .toList(),
                               ),

@@ -132,6 +132,7 @@ class PurchaseController with ChangeNotifier {
       
       await FirebaseFirestore.instance.collection('actions').add({
         'treasury': trasury,
+        'podownpayment':podownpayment,
         'totalmaterialcost': total + poshippingfees,
         'totalcost': total,
         'suppliername': supName,
@@ -144,6 +145,7 @@ class PurchaseController with ChangeNotifier {
         'materialcost': 0,
         'details': 'خامات',
         'date': date,
+        'recevingDate': '',
         'currentvalue': 0,
         'afterquantity': afterBalance,
         'beforequantity': beforeBalance,

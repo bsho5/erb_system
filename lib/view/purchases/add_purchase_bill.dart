@@ -19,8 +19,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddPurchaseBill extends StatefulWidget {
-  const AddPurchaseBill({Key? key}) : super(key: key);
-
+  AddPurchaseBill(
+      {Key? key,
+       this.status,
+       this.date,
+       this.supName,
+       this.remainingBalance,
+       this.paid,
+       this.shipping,
+       this.treasury,
+       this.image,
+       this.id,
+       this.isEdit = false})
+      : super(key: key);
+  String? status;
+  String? date;
+  String? supName;
+  String? remainingBalance;
+  String? paid;
+  String? shipping;
+  String? treasury;
+  String? image;
+  String? id;
+  bool isEdit = false;
+  bool isFromAnotherPage = false;
   @override
   State<AddPurchaseBill> createState() => _AddPurchaseBillState();
 }
@@ -72,6 +94,33 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
     }
   }
 
+  List<String> dbDataId = [];
+  List<String> dataId = [];
+  Map<String, Map<String, dynamic>> result = {};
+  void initState() {
+    super.initState();
+    chose = widget.status;
+    supName = widget.supName;
+    chose1 = widget.treasury;
+    controller1.text = widget.paid ?? "";
+    controller2.text = widget.shipping ?? "";
+    controller3.text = widget.remainingBalance ?? "";
+    FirebaseFirestore.instance
+        .collection('addpurchasing')
+        .doc(widget.id)
+        .collection('rawmaterials')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              setState(() {
+                print(element.id);
+                result[element.id] = element.data();
+                dbDataId.add(element.id);
+                dataId.add(element.id);
+              });
+            }));
+    // TODO: implement initState
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -95,7 +144,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                           const SizedBox(
                             height: 50,
                           ),
-                          DefaultContainer(title: 'اضافه فاتوره مشتريات'),
+                          DefaultContainer(title: widget.isEdit ?' تفاصيل فاتوره مشتريات ': 'اضافه فاتوره مشتريات'),
                           const SizedBox(
                             height: 50,
                           ),
@@ -120,7 +169,9 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                               MaterialStateProperty.all(
                                                   Colors.white)),
                                       child: Text(
-                                        "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
+                                        widget.isEdit
+                                            ? widget.date ?? ''
+                                            : "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
                                         style: TextStyle(
                                           color: ColorManager.black,
                                         ),
@@ -132,24 +183,24 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                               SizedBox(
                                 width: getProportionateScreenWidth(20),
                               ),
-                              Container(
-                                width: getProportionateScreenWidth(50),
-                                height: getProportionateScreenHeight(90),
-                                padding: const EdgeInsets.only(top: 35),
-                                child: dropDown(
-                                  const ['تم الطلب', 'تم الاستلام'],
-                                  selectTalab: chose,
-                                  onchanged: () => (val) {
-                                    setState(() {
-                                      chose = val;
-                                    });
-                                  },
-                                  label: 'حاله الشراء',
-                                  foColor: Colors.white,
-                                  bgColor: ColorManager.primary,
-                                  dpColor: ColorManager.primary,
-                                ),
-                              ),
+                              // Container(
+                              //   width: getProportionateScreenWidth(50),
+                              //   height: getProportionateScreenHeight(90),
+                              //   padding: const EdgeInsets.only(top: 35),
+                              //   child: dropDown(
+                              //     const ['تم الطلب', 'تم الاستلام'],
+                              //     selectTalab: chose,
+                              //     onchanged: () => (val) {
+                              //       setState(() {
+                              //         chose = val;
+                              //       });
+                              //     },
+                              //     label: 'حاله الشراء',
+                              //     foColor: Colors.white,
+                              //     bgColor: ColorManager.primary,
+                              //     dpColor: ColorManager.primary,
+                              //   ),
+                              // ),
                               SizedBox(
                                 width: getProportionateScreenWidth(20),
                               ),
@@ -163,7 +214,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Consumer<AddSuppliersController>(
+                                 widget.isEdit?Text(widget.supName??''): Consumer<AddSuppliersController>(
                                     builder: (context, valu, child) {
                                       return FutureBuilder(
                                           future: valu.getSupplier(),
@@ -190,14 +241,19 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                                     //         s.startsWith('I'),
                                                   ),
                                                   items: List.generate(
-                                                      sup.length,
-                                                      (index) =>
-                                                          sup[index]['name']),
+                                                      widget.isEdit
+                                                          ? dataId.length
+                                                          : sup.length,
+                                                      (index) => widget.isEdit
+                                                          ? (result[
+                                                                  dataId[index]]
+                                                              ?['name'])
+                                                          : sup[index]['name']),
                                                   dropdownDecoratorProps:
-                                                      const DropDownDecoratorProps(
+                                                       DropDownDecoratorProps(
                                                     dropdownSearchDecoration:
                                                         InputDecoration(
-                                                      hintText: "Enter Name",
+                                                      hintText:widget.isEdit?supName??'': "Enter Name",
                                                     ),
                                                   ),
                                                   onChanged: (v) {
@@ -278,268 +334,332 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      Consumer<CategoryController>(
-                                        builder: (context, valu, child) {
-                                          return FutureBuilder(
-                                              future: valu.getMaterials(),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  List sup =
-                                                      snapshot.data as List;
+                                      // Consumer<CategoryController>(
+                                      //   builder: (context, valu, child) {
+                                      //     return FutureBuilder(
+                                      //         future: valu.getMaterials(),
+                                      //         builder: (context, snapshot) {
+                                      //           if (snapshot.hasData) {
+                                      //             List sup =
+                                      //                 snapshot.data as List;
 
-                                                  return SizedBox(
-                                                    width:
-                                                        getProportionateScreenWidth(
-                                                            50),
-                                                    height: 60,
-                                                    child:
-                                                        DropdownSearch<String>(
-                                                      popupProps:
-                                                          PopupProps.menu(
-                                                        showSelectedItems: true,
-                                                        showSearchBox: true,
-                                                        searchFieldProps:
-                                                            TextFieldProps(
-                                                                cursorColor:
-                                                                    ColorManager
-                                                                        .primary),
-                                                        // disabledItemFn:
-                                                        //     (String s) =>
-                                                        //         s.startsWith('I'),
-                                                      ),
-                                                      items: List.generate(
-                                                          sup.length,
-                                                          (index) => sup[index]
-                                                              ['name']),
-                                                      dropdownDecoratorProps:
-                                                          const DropDownDecoratorProps(
-                                                        dropdownSearchDecoration:
-                                                            InputDecoration(
-                                                          hintText: "اسم الصنف",
-                                                        ),
-                                                      ),
-                                                      onChanged: (v) async {
-                                                        await FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                'Materials')
-                                                            .doc(v)
-                                                            .get()
-                                                            .then((value) {
-                                                          catPrice =
-                                                              value['price']
-                                                                  .toString();
-                                                          catName = v;
-                                                          catMeasurement = value[
-                                                              'measurement'];
-                                                          image = value['image'];
-                                                          quantity.text = '0';
-                                                          total.text = '0';
-                                                          data.add({
-                                                            "name": v,
-                                                            'quantity': value[
-                                                                'quantity'],
-                                                            "measurement": value[
-                                                                'measurement'],
-                                                            'price':
-                                                                value['price'],
-                                                            'image':
-                                                                value['image'],
-                                                          });
-                                                        });
+                                      //             return SizedBox(
+                                      //               width:
+                                      //                   getProportionateScreenWidth(
+                                      //                       50),
+                                      //               height: 60,
+                                      //               child:
+                                      //                   DropdownSearch<String>(
+                                      //                 popupProps:
+                                      //                     PopupProps.menu(
+                                      //                   showSelectedItems: true,
+                                      //                   showSearchBox: true,
+                                      //                   searchFieldProps:
+                                      //                       TextFieldProps(
+                                      //                           cursorColor:
+                                      //                               ColorManager
+                                      //                                   .primary),
+                                      //                   // disabledItemFn:
+                                      //                   //     (String s) =>
+                                      //                   //         s.startsWith('I'),
+                                      //                 ),
+                                      //                 items: List.generate(
+                                      //                     widget.isEdit?dataId.length: sup.length,
+                                      //                     (index) =>widget.isEdit?( result[data]?['name']): sup[index]
+                                      //                         ['name']),
+                                      //                 dropdownDecoratorProps:
+                                      //                     const DropDownDecoratorProps(
+                                      //                   dropdownSearchDecoration:
+                                      //                       InputDecoration(
+                                      //                     hintText: "اسم الصنف",
+                                      //                   ),
+                                      //                 ),
+                                      //                 onChanged: (v) async {
+                                      //                   await FirebaseFirestore
+                                      //                       .instance
+                                      //                       .collection(
+                                      //                           'Materials')
+                                      //                       .doc(v)
+                                      //                       .get()
+                                      //                       .then((value) {
+                                      //                     catPrice =
+                                      //                         value['price']
+                                      //                             .toString();
+                                      //                     catName = v;
+                                      //                     catMeasurement = value[
+                                      //                         'measurement'];
+                                      //                     image =
+                                      //                         value['image'];
+                                      //                     quantity.text = '0';
+                                      //                     total.text = '0';
+                                      //                     data.add({
+                                      //                       "name": v,
+                                      //                       'quantity': value[
+                                      //                           'quantity'],
+                                      //                       "measurement": value[
+                                      //                           'measurement'],
+                                      //                       'price':
+                                      //                           value['price'],
+                                      //                       'image':
+                                      //                           value['image'],
+                                      //                     });
+                                      //                   });
 
-                                                        print(v);
-                                                        setState(() {});
-                                                      },
-                                                    ),
-                                                  );
-                                                } else {
-                                                  return const CircularProgressIndicator();
-                                                }
-                                              });
-                                        },
-                                      )
+                                      //                   print(v);
+                                      //                   setState(() {});
+                                      //                 },
+                                      //               ),
+                                      //             );
+                                      //           } else {
+                                      //             return const CircularProgressIndicator();
+                                      //           }
+                                      //         });
+                                      //   },
+                                      // )
                                     ],
                                   ),
                                   DefaultTable(
                                       columnData: columnData,
                                       size: getProportionateScreenWidth(15),
                                       color: ColorManager.primary,
-                                      rows: [
-                                        ...finalData
-                                            .map((data) => DataRow(cells: [
-                                                  DataCell(Image.network(
-                                                    data['image'],
-                                                    width: 50,
-                                                    height: 50,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['total'].toString(),
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['price'].toString(),
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['measurement'],
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['quantity'],
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['name'],
-                                                    style: style,
-                                                  )),
-                                                ]))
-                                            .toList(),
-                                        ...data
-                                            .map((data) => DataRow(cells: [
-                                                  DataCell(Image.network(
-                                                    data['image'],
-                                                    width: 50,
-                                                    height: 50,
-                                                  )),
-                                                  DataCell(
-                                                    TextFormField(
-                                                      readOnly: false,
-                                                      controller: total,
-                                                      style: TextStyle(
-                                                          fontSize:
-                                                              getProportionateScreenWidth(
-                                                                  4)),
-                                                      onChanged: (v) {},
-                                                      decoration:
-                                                          InputDecoration(
-                                                        border:
-                                                            InputBorder.none,
-                                                        hintStyle:
-                                                            const TextStyle(
-                                                                fontSize: 14),
-                                                        label: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            child: const Text(
+                                      rows: widget.isEdit
+                                          ? [
+                                              ...dataId
+                                                  .map((data) =>
+                                                      DataRow(cells: [
+                                                        // DataCell(Image.network(
+                                                        //   result[data]
+                                                        //                             ?['image'],
+                                                        //   width: 50,
+                                                        //   height: 50,
+                                                        // )),
+                                                        DataCell(Text('')),
+                                                        DataCell(Text(
+                                                          result[data]?[
+                                                                      'totalprice']
+                                                                  .toString() ??
                                                               '',
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            )),
-                                                        filled: true,
-                                                        fillColor: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  DataCell(Text(
-                                                    data['price'].toString(),
-                                                    style: style,
-                                                  )),
-                                                  DataCell(Text(
-                                                    data['measurement'],
-                                                    style: style,
-                                                  )),
-                                                  DataCell(
-                                                    TextFormField(
-                                                      controller: quantity,
-                                                      style: TextStyle(
-                                                          fontSize:
-                                                              getProportionateScreenWidth(
-                                                                  4)),
-                                                      onChanged: (v) {
-                                                        setState(() {
-                                                          if (v.isNotEmpty) {
-                                                            total = TextEditingController(
-                                                                text:
-                                                                    "${data['price'] * num.parse(v)}");
-                                                          } else {
-                                                            total =
-                                                                TextEditingController(
-                                                                    text: "0");
-                                                          }
-                                                        });
-                                                      },
-                                                      decoration:
-                                                          InputDecoration(
-                                                        border:
-                                                            InputBorder.none,
-                                                        hintStyle:
-                                                            const TextStyle(
-                                                                fontSize: 14),
-                                                        label: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            child: const Text(
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          result[data]?['price']
+                                                                  .toString() ??
                                                               '',
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          result[data]!['unit'],
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          result[data]?[
+                                                              'requirequantity'],
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          result[data]?['name'],
+                                                          style: style,
+                                                        )),
+                                                      ]))
+                                                  .toList(),
+                                            ]
+                                          : [
+                                              ...finalData
+                                                  .map((data) =>
+                                                      DataRow(cells: [
+                                                        DataCell(Image.network(
+                                                          data['image'],
+                                                          width: 50,
+                                                          height: 50,
+                                                        )),
+                                                        DataCell(Text(
+                                                          data['total']
+                                                              .toString(),
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          data['price']
+                                                              .toString(),
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          data['measurement'],
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          data['quantity'],
+                                                          style: style,
+                                                        )),
+                                                        DataCell(Text(
+                                                          data['name'],
+                                                          style: style,
+                                                        )),
+                                                      ]))
+                                                  .toList(),
+                                              ...data
+                                                  .map(
+                                                      (data) => DataRow(cells: [
+                                                            DataCell(
+                                                                Image.network(
+                                                              data['image'],
+                                                              width: 50,
+                                                              height: 50,
                                                             )),
-                                                        filled: true,
-                                                        fillColor: Colors.white,
-                                                      ),
-                                                    ),
+                                                            DataCell(
+                                                              TextFormField(
+                                                                readOnly: false,
+                                                                controller:
+                                                                    total,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        getProportionateScreenWidth(
+                                                                            4)),
+                                                                onChanged:
+                                                                    (v) {},
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  border:
+                                                                      InputBorder
+                                                                          .none,
+                                                                  hintStyle:
+                                                                      const TextStyle(
+                                                                          fontSize:
+                                                                              14),
+                                                                  label: Container(
+                                                                      alignment: Alignment.center,
+                                                                      child: const Text(
+                                                                        '',
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      )),
+                                                                  filled: true,
+                                                                  fillColor:
+                                                                      Colors
+                                                                          .white,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            DataCell(Text(
+                                                              data['price']
+                                                                  .toString(),
+                                                              style: style,
+                                                            )),
+                                                            DataCell(Text(
+                                                              data[
+                                                                  'measurement'],
+                                                              style: style,
+                                                            )),
+                                                            DataCell(
+                                                              TextFormField(
+                                                                controller:
+                                                                    quantity,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        getProportionateScreenWidth(
+                                                                            4)),
+                                                                onChanged: (v) {
+                                                                  setState(() {
+                                                                    if (v
+                                                                        .isNotEmpty) {
+                                                                      total = TextEditingController(
+                                                                          text:
+                                                                              "${data['price'] * num.parse(v)}");
+                                                                    } else {
+                                                                      total = TextEditingController(
+                                                                          text:
+                                                                              "0");
+                                                                    }
+                                                                  });
+                                                                },
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  border:
+                                                                      InputBorder
+                                                                          .none,
+                                                                  hintStyle:
+                                                                      const TextStyle(
+                                                                          fontSize:
+                                                                              14),
+                                                                  label: Container(
+                                                                      alignment: Alignment.center,
+                                                                      child: const Text(
+                                                                        '',
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white),
+                                                                      )),
+                                                                  filled: true,
+                                                                  fillColor:
+                                                                      Colors
+                                                                          .white,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            DataCell(Text(
+                                                              data['name'],
+                                                              style: style,
+                                                            )),
+                                                          ]))
+                                                  .toList(),
+                                            ]),
+                                  widget.isEdit
+                                      ? SizedBox()
+                                      : InkWell(
+                                          onTap: () {
+                                            finalData.add({
+                                              "name": catName,
+                                              'quantity': quantity.text,
+                                              "measurement": catMeasurement,
+                                              'price': catPrice,
+                                              'image': image,
+                                              'total': total.text,
+                                            });
+                                            totalTotal +=
+                                                double.parse(total.text);
+                                            totalQuantity +=
+                                                int.parse(quantity.text);
+                                            data.clear();
+                                            setState(() {});
+                                          },
+                                          child: Container(
+                                            width:
+                                                getProportionateScreenWidth(42),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(25)),
+                                                border: Border.all(
+                                                    color:
+                                                        ColorManager.primary)),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: ColorManager.primary,
+                                                ),
+                                                Text(
+                                                  'اضافه صنف ',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        getProportionateScreenWidth(
+                                                            5),
+                                                    fontWeight: FontWeight.w500,
+                                                    // color: ColorManager.primary
                                                   ),
-                                                  DataCell(Text(
-                                                    data['name'],
-                                                    style: style,
-                                                  )),
-                                                ]))
-                                            .toList(),
-                                      ]),
-                                  InkWell(
-                                    onTap: () {
-                                      finalData.add({
-                                        "name": catName,
-                                        'quantity': quantity.text,
-                                        "measurement": catMeasurement,
-                                        'price': catPrice,
-                                        'image': image,
-                                        'total': total.text,
-                                      });
-                                      totalTotal += double.parse(total.text);
-                                      totalQuantity += int.parse(quantity.text);
-                                      data.clear();
-                                      setState(() {});
-                                    },
-                                    child: Container(
-                                      width: getProportionateScreenWidth(42),
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(25)),
-                                          border: Border.all(
-                                              color: ColorManager.primary)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.add,
-                                            color: ColorManager.primary,
-                                          ),
-                                          Text(
-                                            'اضافه صنف ',
-                                            style: TextStyle(
-                                              fontSize:
-                                                  getProportionateScreenWidth(
-                                                      5),
-                                              fontWeight: FontWeight.w500,
-                                              // color: ColorManager.primary
+                                                )
+                                              ],
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                          ),
+                                        ),
                                 ],
                               ),
                             ],
@@ -608,6 +728,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                       controller: controller2,
                                       hint: '',
                                       label: '',
+                                      readOnly: widget.isEdit,
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -638,6 +759,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                       controller: controller3,
                                       hint: '',
                                       label: '',
+                                      readOnly: widget.isEdit,
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -665,6 +787,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                     width: getProportionateScreenWidth(60),
                                     height: 60,
                                     child: TextFormField(
+                                      readOnly: widget.isEdit,
                                       controller: controller1,
                                       style: TextStyle(
                                           fontSize:
@@ -722,42 +845,45 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                           const SizedBox(
                             height: 50,
                           ),
-                          Botton(
-                            color: ColorManager.white,
-                            title: 'اضافه',
-                            onTap: () {
-
-                              try{
-                                pro.addBill(
-                                    bank!,
-                                    double.parse(controller1.text) +
-                                        double.parse(controller2.text),
-                                    supName!,
-                                    double.parse(controller3.text),
-                                    totalTotal)
-                                    .then((value) {
-                                  pro.addPurchasing(
-                                      date: orderDate.toString(),
-                                      state: chose!,
-                                      trasury: chose1!,
-                                      supName: supName!,
-                                      podownpayment:
-                                      double.parse(controller1.text),
-                                      poshippingfees:
-                                      double.parse(controller2.text),
-                                      remainbalance:
-                                      double.parse(controller3.text),
-                                      total: totalTotal,
-                                      purData: finalData,
-                                      totalQuantity: totalQuantity,
-                                      measurement: catMeasurement!);
-                                });
-                              }catch(e){
-                                print(e.toString());
-                              }
-                            },
-                            bgColor: ColorManager.black,
-                          )
+                          widget.isEdit
+                              ? Container()
+                              : Botton(
+                                  color: ColorManager.white,
+                                  title: 'اضافه',
+                                  onTap: () {
+                                    try {
+                                      pro
+                                          .addBill(
+                                              bank!,
+                                              double.parse(controller1.text) +
+                                                  double.parse(
+                                                      controller2.text),
+                                              supName!,
+                                              double.parse(controller3.text),
+                                              totalTotal)
+                                          .then((value) {
+                                        pro.addPurchasing(
+                                            date: orderDate.toString(),
+                                            state: chose!,
+                                            trasury: chose1!,
+                                            supName: supName!,
+                                            podownpayment:
+                                                double.parse(controller1.text),
+                                            poshippingfees:
+                                                double.parse(controller2.text),
+                                            remainbalance:
+                                                double.parse(controller3.text),
+                                            total: totalTotal,
+                                            purData: finalData,
+                                            totalQuantity: totalQuantity,
+                                            measurement: catMeasurement!);
+                                      });
+                                    } catch (e) {
+                                      print(e.toString());
+                                    }
+                                  },
+                                  bgColor: ColorManager.black,
+                                )
                         ],
                       ),
                     ),

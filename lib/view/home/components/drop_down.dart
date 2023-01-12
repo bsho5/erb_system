@@ -31,12 +31,12 @@ class dropDown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
-      height: height,
+      // width: width,
+      // height: height,
       child: Center(
           child: Container(
-        width: double.infinity,
-        height: 55,
+        // width: double.infinity,
+        height: 41,
         padding: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
             color: bgColor, borderRadius: BorderRadius.circular(radius)),
