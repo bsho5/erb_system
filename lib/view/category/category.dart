@@ -29,7 +29,7 @@ class _CategoriesState extends State<Categories> {
   int? selectedIndex;
   TextEditingController controller1 = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-  int ordersNumber = 25;
+  int ordersNumber = 30;
   List data = [
     {
       "1": "١/١٢.٢٠٢٢",
@@ -65,6 +65,7 @@ class _CategoriesState extends State<Categories> {
   ];
   List<String> dbDataId = [];
   List<String> dataId = [];
+  List<String> dataIdUnPaginated = [];
   Map<String, Map<String, dynamic>> result = {};
   double total = 0;
 
@@ -156,7 +157,7 @@ class _CategoriesState extends State<Categories> {
                                         setState(() {
                                           if (v.isNotEmpty) {
                                             performSearch(v.toCapitalized());
-                                           
+
                                             // ordersNumber = dataId.length;
                                           } else {
                                             dataId = dbDataId;
@@ -408,7 +409,7 @@ class _CategoriesState extends State<Categories> {
                                       onPressed: () {
                                         setState(() {
                                           if (ordersNumber < dataId.length) {
-                                            ordersNumber = ordersNumber + 5;
+                                            ordersNumber = ordersNumber + 10;
                                           }
                                         });
                                       },
@@ -435,7 +436,7 @@ class _CategoriesState extends State<Categories> {
                                             ),
                                             onPressed: () {
                                               setState(() {
-                                                ordersNumber = ordersNumber - 5;
+                                                ordersNumber = ordersNumber - 10;
                                               });
                                             },
                                           )),
@@ -466,3 +467,20 @@ class _CategoriesState extends State<Categories> {
     ));
   }
 }
+
+
+
+//  int pagesNumber =
+//                                             dataIdUnPaginated.length <
+//                                                     ordersNumber + 25
+//                                                 ? dataIdUnPaginated.length
+//                                                 : ordersNumber + 25;
+//                                         setState(() {
+//                                           dataId = [];
+//                                           for (var i = ordersNumber;
+//                                               i < pagesNumber;
+//                                               i++) {
+//                                             dataId.add(dataIdUnPaginated[i]);
+//                                           }
+
+//                                           ordersNumber = ordersNumber + 25;

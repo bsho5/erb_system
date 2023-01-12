@@ -41,8 +41,8 @@ class _TalabatState extends State<Talabat> {
   String? governorate;
   String? cityMain;
   String? governorateMain;
-  int ordersNumber = 6;
-  int optionsNumber = 6;
+  int ordersNumber = 30;
+  int optionsNumber = 30;
   String? numLine1;
   int index = 1;
 
@@ -129,8 +129,11 @@ class _TalabatState extends State<Talabat> {
                 result[element.id] = element.data();
                 dbDataId.add(element.id);
                 dataId.add(element.id);
+                optionsNumber = dataId.length;
               });
             }));
+
+    
   }
 
   void performSearch(String query) {
@@ -162,6 +165,7 @@ class _TalabatState extends State<Talabat> {
           result: result);
       optionsNumber = dataId.length;
     });
+    optionsNumber = dataId.length;
   }
 
   @override
@@ -1435,35 +1439,60 @@ class _TalabatState extends State<Talabat> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 60),
-                      child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 40),
-                          decoration: BoxDecoration(
-                            color: ordersNumber < dataId.length
-                                ? Color(0xff82225E)
-                                : Colors.grey,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: TextButton(
-                            child: Text(
-                              'المزيد',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                if (ordersNumber < dataId.length) {
-                                  ordersNumber = ordersNumber + 5;
-                                }
-                                if (ordersNumber > dataId.length) {
-                                  optionsNumber = dataId.length;
-                                } else {
-                                  optionsNumber = ordersNumber;
-                                }
-                              });
-                            },
-                          )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 60),
+                          child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 40),
+                              decoration: BoxDecoration(
+                                color: ordersNumber < dataId.length
+                                    ? Color(0xff82225E)
+                                    : Colors.grey,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: TextButton(
+                                child: Text(
+                                  'المزيد',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    if (ordersNumber < dataId.length) {
+                                      ordersNumber = ordersNumber + 10;
+                                    }
+                                  });
+                                },
+                              )),
+                        ),
+                        ordersNumber > 30
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 60),
+                                child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 40),
+                                    decoration: BoxDecoration(
+                                      color: ordersNumber < dataId.length
+                                          ? Color(0xff82225E)
+                                          : Colors.grey,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: TextButton(
+                                      child: Text(
+                                        'اقل',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          ordersNumber = ordersNumber - 10;
+                                        });
+                                      },
+                                    )),
+                              )
+                            : SizedBox(),
+                      ],
                     ),
                     const SizedBox(
                       height: 50,
