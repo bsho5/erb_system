@@ -26,6 +26,8 @@ class _CategoriesState extends State<Categories> {
   String? chose;
   String? chose1;
   String? chose2;
+  String? searchWord;
+  String? production;
   int? selectedIndex;
   TextEditingController controller1 = TextEditingController();
   TextEditingController controller2 = TextEditingController();
@@ -69,16 +71,23 @@ class _CategoriesState extends State<Categories> {
   Map<String, Map<String, dynamic>> result = {};
   double total = 0;
 
-  void performSearch(String query) {
+  void performSearch(
+    String? searchWord,
+    String? categoryType,
+    String? production,
+  ) {
     setState(() {
-      dataId = searchByWord(query, result);
-      print(dataId);
+      dataId = categoryFilter(
+          searchWord: searchWord ?? '',
+          categoryType: categoryType ?? '',
+          production: production ?? '',
+          result: result);
+      //print(dataId);
       total = dataId.fold(
           0,
           (previousValue, element) =>
               previousValue +
-              
-                  result[element]?['openingbalance'] * result[element]?['price']);
+              result[element]?['openingbalance'] * result[element]?['price']);
     });
   }
 
@@ -94,8 +103,8 @@ class _CategoriesState extends State<Categories> {
 
                 dbDataId.add(element.id);
                 dataId.add(element.id);
-                print(element.data()['openingbalance']);
-                print(element.data()['price']);
+                //print(element.data()['openingbalance']);
+                //print(element.data()['price']);
                 total = total +
                     (element.data()['openingbalance'] *
                         element.data()['price']);
@@ -155,11 +164,19 @@ class _CategoriesState extends State<Categories> {
                                       label: '',
                                       onChanged: (v) {
                                         setState(() {
-                                          if (v.isNotEmpty) {
-                                            performSearch(v.toCapitalized());
+                                          production = v;
+                                          performSearch(
+                                              searchWord?.toCapitalized() ?? '',
+                                              chose == 'الكل'
+                                                  ? chose = null
+                                                  : chose,
+                                              production?.toCapitalized() ??
+                                                  '');
 
-                                            // ordersNumber = dataId.length;
-                                          } else {
+                                          // ordersNumber = dataId.length;
+                                          if (production == null &&
+                                              searchWord == null &&
+                                              chose == 'الكل') {
                                             dataId = dbDataId;
                                           }
                                         });
@@ -179,18 +196,29 @@ class _CategoriesState extends State<Categories> {
                               ),
                               Container(
                                 width: getProportionateScreenWidth(41),
-                                height: 80,
+                                height: 100,
                                 padding: const EdgeInsets.only(top: 35),
                                 child: dropDown(
                                   const [
+                                    "الكل",
                                     'مواد خام',
                                     'منتج التشغيل',
-                                    "منتج تام"
+                                    "منتج تام",
                                   ],
                                   selectTalab: chose,
                                   onchanged: () => (val) {
                                     setState(() {
                                       chose = val;
+                                      if (chose == 'الكل') {
+                                        chose = null;
+                                      }
+
+                                      performSearch(
+                                          searchWord?.toCapitalized() ?? '',
+                                          chose == 'الكل'
+                                              ? chose = null
+                                              : chose,
+                                          production?.toCapitalized() ?? '');
                                     });
                                   },
                                   label: 'نوع الصنف',
@@ -224,10 +252,18 @@ class _CategoriesState extends State<Categories> {
                                       label: '',
                                       onChanged: (v) {
                                         setState(() {
-                                          if (v.isNotEmpty) {
-                                            performSearch(v.toCapitalized());
-                                            // ordersNumber = dataId.length;
-                                          } else {
+                                          searchWord = v;
+                                          performSearch(
+                                              searchWord?.toCapitalized() ?? '',
+                                              chose == 'الكل'
+                                                  ? chose = null
+                                                  : chose,
+                                              production?.toCapitalized() ??
+                                                  '');
+                                          // ordersNumber = dataId.length;
+                                          if (production == null &&
+                                              searchWord == null &&
+                                              chose == 'الكل') {
                                             dataId = dbDataId;
                                           }
                                         });
@@ -436,7 +472,8 @@ class _CategoriesState extends State<Categories> {
                                             ),
                                             onPressed: () {
                                               setState(() {
-                                                ordersNumber = ordersNumber - 10;
+                                                ordersNumber =
+                                                    ordersNumber - 10;
                                               });
                                             },
                                           )),

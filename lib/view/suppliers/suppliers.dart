@@ -206,25 +206,19 @@ class _SuppliersState extends State<Suppliers> {
                                                                     '/sup_money_details');
                                                               } else if (chose1 ==
                                                                   "تعديل المورد") {
-                                                                print(result[dataId[index]]);
+                                                                //print(result[dataId[index]]);
                                                                 Navigator.push(
                                                                     context,
                                                                     MaterialPageRoute(
                                                                         builder: (BuildContext
                                                                                 context) =>
                                                                             AddSup(
-                                                                              name: result[dataId[index]]
-                                                                              ?['name'].toString(),
-                                                                              subCategory:result[dataId[index]]
-                                                                              ?['category'].toString(),
-                                                                              supRating: result[dataId[index]]
-                                                                              ?['supplierrate'].toString(),
-                                                                              address: result[dataId[index]]
-                                                                              ?['address'].toString(),
-                                                                              phone: result[dataId[index]]
-                                                                              ?['phonenumber'].toString(),
-                                                                              priceRating: result[dataId[index]]
-                                                                              ?['pricerate'].toString(),
+                                                                              name: result[dataId[index]]?['name'].toString(),
+                                                                              subCategory: result[dataId[index]]?['category'].toString(),
+                                                                              supRating: result[dataId[index]]?['supplierrate'].toString(),
+                                                                              address: result[dataId[index]]?['address'].toString(),
+                                                                              phone: result[dataId[index]]?['phonenumber'].toString(),
+                                                                              priceRating: result[dataId[index]]?['pricerate'].toString(),
                                                                             )));
                                                               }
                                                             },

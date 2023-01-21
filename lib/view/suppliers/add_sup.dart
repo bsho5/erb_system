@@ -46,12 +46,12 @@ class _AddSupState extends State<AddSup> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(controller1.text);
-    print(controller2.text);
-    print(controller3.text);
-    print(controller4.text);
-    print(controller5.text);
-    print(controller6.text);
+    //print(controller1.text);
+    //print(controller2.text);
+    //print(controller3.text);
+    //print(controller4.text);
+    //print(controller5.text);
+    //print(controller6.text);
     controller1.text = widget.address ?? '';
     controller2.text = widget.subCategory ?? '';
     controller3.text = widget.name ?? '';

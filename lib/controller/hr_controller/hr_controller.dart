@@ -11,14 +11,14 @@ class AddHRController with ChangeNotifier {
 
   void addHR(
       {required String name,
-        required String level,
-        required String salaryType,
-        required double standerSalary,
-        double? loan,
-        required double variableSalary,
-        required double totalSalary,
-        required String department,
-        required String covenant}) async {
+      required String level,
+      required String salaryType,
+      required double standerSalary,
+      double? loan,
+      required double variableSalary,
+      required double totalSalary,
+      required String department,
+      required String covenant}) async {
     await FirebaseFirestore.instance.collection('addemployee').add({
       'name': name,
       "level": level,
@@ -64,12 +64,12 @@ class AddHRController with ChangeNotifier {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        print(element.data());
+        //print(element.data());
         hr = element.data();
         // hr.add(element.data());
       });
     });
-    // print(hr);
+    // //print(hr);
     notifyListeners();
   }
 

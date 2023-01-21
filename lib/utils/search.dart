@@ -13,19 +13,18 @@ List<String> search(String searchWord, Map<String, Map<String, dynamic>> result,
   return dataId;
 }
 
-List<String> searchByWord(String searchWord, Map<String, Map<String, dynamic>> result,
-   
-   ) {
+List<String> searchByWord(
+  String searchWord,
+  Map<String, Map<String, dynamic>> result,
+) {
   List<String> dataId = [];
   result.forEach((key, value) {
-    if (value.values.any((v) => v.toString().contains(searchWord)) 
-     ) {
+    if (value.values.any((v) => v.toString().contains(searchWord))) {
       dataId.add(key);
     }
   });
   return dataId;
 }
-
 
 List<String> filter({
   required String orderType,
@@ -35,7 +34,6 @@ List<String> filter({
   required String city,
   required String governorate,
   required String shipping,
-  
   required Map<String, Map<String, dynamic>> result,
 }) {
   List<String> dataId = [];
@@ -47,22 +45,35 @@ List<String> filter({
     if (city.isEmpty) city = '';
     if (governorate.isEmpty) governorate = '';
     if (shipping.isEmpty) shipping = '';
-    
-    if (
-        value.values.any((v) => v.toString().contains(orderStatus))
-        &&
-        value.values.any((v) => v.toString().contains(city))
-        &&
-        value.values.any((v) => v.toString().contains(orderType))
-        &&
-        value.values.any((v) => v.toString().contains(clientType))
-        &&
-        value.values.any((v) => v.toString().contains(orderOrigin))
-        &&
-        value.values.any((v) => v.toString().contains(governorate))
-        &&
-        value.values.any((v) => v.toString().contains(shipping))
-       ) {
+
+    if (value.values.any((v) => v.toString().contains(orderStatus)) &&
+        value.values.any((v) => v.toString().contains(city)) &&
+        value.values.any((v) => v.toString().contains(orderType)) &&
+        value.values.any((v) => v.toString().contains(clientType)) &&
+        value.values.any((v) => v.toString().contains(orderOrigin)) &&
+        value.values.any((v) => v.toString().contains(governorate)) &&
+        value.values.any((v) => v.toString().contains(shipping))) {
+      dataId.add(key);
+    }
+  });
+  return dataId;
+}
+
+List<String> categoryFilter({
+  required String searchWord,
+  required String categoryType,
+  required String production,
+  required Map<String, Map<String, dynamic>> result,
+}) {
+  List<String> dataId = [];
+  result.forEach((key, value) {
+    if (searchWord.isEmpty) searchWord = '';
+    if (categoryType.isEmpty) categoryType = '';
+    if (production.isEmpty) production = '';
+
+    if (value.values.any((v) => v.toString().contains(searchWord)) &&
+        value.values.any((v) => v.toString().contains(categoryType)) &&
+        value.values.any((v) => v.toString().contains(production))) {
       dataId.add(key);
     }
   });
@@ -85,10 +96,15 @@ Future<bool> compareTreasury(String treasury, int amount) async {
       }
     }
   });
-  print(compareTreasury);
+  //print(compareTreasury);
   return compareTreasury;
 }
+
 extension StringCasingExtension on String {
-  String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
-  String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
+  String toCapitalized() =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+      .split(' ')
+      .map((str) => str.toCapitalized())
+      .join(' ');
 }

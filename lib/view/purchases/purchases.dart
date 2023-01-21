@@ -250,7 +250,7 @@ class _PurchasesState extends State<Purchases> {
                                       label: '',
                                       onChanged: (v) {
                                         setState(() {
-                                          print(v);
+                                          //print(v);
                                           if (v.isNotEmpty) {
                                             performSearch(v);
                                           } else {
@@ -313,41 +313,48 @@ class _PurchasesState extends State<Purchases> {
                                                             '/confirm_back_purchase');
                                                       } else if (val ==
                                                           'تفاصيل') {
-                                                                Navigator.push(
+                                                        Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
                                                                 builder: (BuildContext
-                                                                        context) =>  AddPurchaseBill(
-                                                          status: '',
-                                                          isEdit: true,
-                                                          date: DateFormat('yyyy-MM-dd')
-                                                    .format(((result[dataId[index]]
+                                                                        context) =>
+                                                                    AddPurchaseBill(
+                                                                      status:
+                                                                          '',
+                                                                      isEdit:
+                                                                          true,
+                                                                      date: DateFormat(
+                                                                              'yyyy-MM-dd')
+                                                                          .format(
+                                                                              ((result[dataId[index]]?['recevingDate']) as Timestamp).toDate())
+                                                                          .toString(),
+                                                                      supName: result[dataId[index]]
                                                                               ?[
-                                                                'recevingDate'])
-                                                            as Timestamp)
-                                                        .toDate())
-                                                    .toString(),
-                                                          supName: result[dataId[index]]
-                                                                              ?['suppliername']
-                                                  .toString(),
-                                                          remainingBalance: '',
-                                                          paid: result[dataId[index]]
-                                                                              ?['podownpayment']
-                                                  .toString(),
-                                                          shipping: result[dataId[index]]
-                                                                              ?['poshippingfees']
-                                                  .toString(),
-                                                          treasury: result[dataId[index]]
-                                                                              ?['treasury'],
-                                                          image: result[dataId[index]]
-                                                                              ?['image'],
-                                                          id: result[dataId[index]]
-                                                                              ?['actionreference'],
-                                                        )
-                                                      
-                                                                    ));
-
-                                                      
+                                                                              'suppliername']
+                                                                          .toString(),
+                                                                      remainingBalance:
+                                                                          '',
+                                                                      paid: result[dataId[index]]
+                                                                              ?[
+                                                                              'podownpayment']
+                                                                          .toString(),
+                                                                      shipping: result[dataId[index]]
+                                                                              ?[
+                                                                              'poshippingfees']
+                                                                          .toString(),
+                                                                      treasury:
+                                                                          result[dataId[index]]
+                                                                              ?[
+                                                                              'treasury'],
+                                                                      image: result[
+                                                                              dataId[index]]
+                                                                          ?[
+                                                                          'image'],
+                                                                      id: result[
+                                                                              dataId[index]]
+                                                                          ?[
+                                                                          'actionreference'],
+                                                                    )));
                                                       }
                                                       setState(() {
                                                         selectedIndex = index;

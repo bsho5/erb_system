@@ -100,7 +100,8 @@ class _ExpensesState extends State<Expenses> {
       });
     }
   }
-   List<String> dbDataId = [];
+
+  List<String> dbDataId = [];
   List<String> dataId = [];
   double total = 0;
   Map<String, Map<String, dynamic>> result = {};
@@ -116,7 +117,7 @@ class _ExpensesState extends State<Expenses> {
         .then((value) => value.docs.forEach((element) {
               setState(() {
                 result[element.id] = element.data();
-                 dbDataId.add(element.id);
+                dbDataId.add(element.id);
                 dataId.add(element.id);
 
                 total = total + int.parse(element.data()['amount']);
@@ -185,14 +186,13 @@ class _ExpensesState extends State<Expenses> {
                                       label: '',
                                       onChanged: (v) {
                                         setState(() {
-                                            print(v);
-                                        if (v.isNotEmpty) {
-                                          performSearch(v);
-                                        } else {
-                                          dataId = dbDataId;
-                                        }
+                                          //print(v);
+                                          if (v.isNotEmpty) {
+                                            performSearch(v);
+                                          } else {
+                                            dataId = dbDataId;
+                                          }
                                         });
-                                      
                                       },
                                       onSave: () {},
                                       onTab: () {},
@@ -340,7 +340,8 @@ class _ExpensesState extends State<Expenses> {
                                                                               'تفاصيل'
                                                                           ? false
                                                                           : true,
-                                                                          isFromAnotherPage: true,
+                                                                      isFromAnotherPage:
+                                                                          true,
                                                                     )));
 
                                                         selectedIndex = index;

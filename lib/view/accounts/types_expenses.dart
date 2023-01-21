@@ -270,63 +270,49 @@ class _TypesExpensesState extends State<TypesExpenses> {
                                                             : chose2,
                                                     onchanged: () => (val) {
                                                       setState(() {
-                                                       
                                                         // ?
-                                                       if ( val == ' تعديل') {
-                                                         Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (BuildContext
-                                                                        context) =>
-                                                                    AddExpenses(
-                                                                      id: dataId[
-                                                                          index],
-                                                                      expensetype: (result[dataId[index]]
-                                                                              ?[
-                                                                              'expensetype'])
-                                                                          .toString(),
-                                                                      amount: (result[dataId[index]]
-                                                                              ?[
-                                                                              'amount'])
-                                                                          .toString(),
-                                                                      notes: (result[dataId[index]]
-                                                                              ?[
-                                                                              'notes'])
-                                                                          .toString(),
-                                                                      treasury: (result[dataId[index]]
-                                                                              ?[
-                                                                              'treasury'])
-                                                                          .toString(),
-                                                                      description: (result[dataId[index]]
-                                                                              ?[
-                                                                              'description'])
-                                                                          .toString(),
-                                                                      date: DateFormat(
-                                                                              'yyyy-MM-dd')
-                                                                          .format(
-                                                                              ((result[dataId[index]]?['date']) as Timestamp).toDate())
-                                                                          .toString(),
-                                                                      isEdit: val ==
-                                                                              'تفاصيل'
-                                                                          ? false
-                                                                          : true,
-                                                                      isFromAnotherPage:
-                                                                          true,
-                                                                    )));
-                                                       } else {
-                                                             FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'finance')
-                                                                .doc(dataId[
-                                                                    index])
-                                                                .delete();
-                                                        dataId.remove(
-                                                            dataId[index]);
-                                                       } 
-                                                  
+                                                        if (val == ' تعديل') {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      AddExpenses(
+                                                                        id: dataId[
+                                                                            index],
+                                                                        expensetype:
+                                                                            (result[dataId[index]]?['expensetype']).toString(),
+                                                                        amount:
+                                                                            (result[dataId[index]]?['amount']).toString(),
+                                                                        notes: (result[dataId[index]]?['notes'])
+                                                                            .toString(),
+                                                                        treasury:
+                                                                            (result[dataId[index]]?['treasury']).toString(),
+                                                                        description:
+                                                                            (result[dataId[index]]?['description']).toString(),
+                                                                        date: DateFormat('yyyy-MM-dd')
+                                                                            .format(((result[dataId[index]]?['date']) as Timestamp).toDate())
+                                                                            .toString(),
+                                                                        isEdit: val ==
+                                                                                'تفاصيل'
+                                                                            ? false
+                                                                            : true,
+                                                                        isFromAnotherPage:
+                                                                            true,
+                                                                      )));
+                                                        } else {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'finance')
+                                                              .doc(
+                                                                  dataId[index])
+                                                              .delete();
+                                                          dataId.remove(
+                                                              dataId[index]);
+                                                        }
 
-                                                        print(dataId);
+                                                        //print(dataId);
 
                                                         selectedIndex = index;
                                                         chose1 = val;

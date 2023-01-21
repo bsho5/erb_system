@@ -29,17 +29,18 @@ class AddStoreController with ChangeNotifier {
         storeData.add(element.data());
       });
     });
-    print(storeData);
+    //print(storeData);
     notifyListeners();
   }
-  getRowMaterialDetails(String warehouse,String pname) async {
-    print(warehouse);
-    print(pname);
-    QuerySnapshot qn = await  FirebaseFirestore.instance
+
+  getRowMaterialDetails(String warehouse, String pname) async {
+    //print(warehouse);
+    //print(pname);
+    QuerySnapshot qn = await FirebaseFirestore.instance
         .collection('warehouses')
         .doc(warehouse)
         .collection('Reports')
-        .where("name",isEqualTo: pname)
+        .where("name", isEqualTo: pname)
         .get();
     return qn.docs;
   }
@@ -56,9 +57,6 @@ class AddStoreController with ChangeNotifier {
         rowMaterial.add(element.data());
       });
     });
-
-
-
 
     notifyListeners();
   }

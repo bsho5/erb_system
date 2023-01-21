@@ -132,8 +132,6 @@ class _TalabatState extends State<Talabat> {
                 optionsNumber = dataId.length;
               });
             }));
-
-    
   }
 
   void performSearch(String query) {

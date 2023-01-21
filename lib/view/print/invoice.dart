@@ -278,7 +278,7 @@ class _InvoiceState extends State<Invoice> {
                               ),
                               child: Row(
                                 children: [
-                                   CircleAvatar(
+                                  CircleAvatar(
                                     backgroundColor: Colors.black,
                                     backgroundImage:
                                         AssetImage(ImageAssets.iconDropDown35),
@@ -359,7 +359,7 @@ class _InvoiceState extends State<Invoice> {
           _pickedImage = selected;
         });
       } else {
-        print('No iamge has been picked');
+        //print('No iamge has been picked');
       }
     } else if (kIsWeb) {
       final ImagePicker _picker = ImagePicker();
@@ -371,10 +371,10 @@ class _InvoiceState extends State<Invoice> {
           _pickedImage = File('a');
         });
       } else {
-        print('No iamge has been picked');
+        //print('No iamge has been picked');
       }
     } else {
-      print('Something Went Wrong');
+      //print('Something Went Wrong');
     }
   }
 }

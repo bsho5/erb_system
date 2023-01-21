@@ -456,7 +456,7 @@ class _PriceQuotationState extends State<PriceQuotation> {
           _pickedImage = selected;
         });
       } else {
-        print('No iamge has been picked');
+        //print('No iamge has been picked');
       }
     } else if (kIsWeb) {
       final ImagePicker _picker = ImagePicker();
@@ -468,10 +468,10 @@ class _PriceQuotationState extends State<PriceQuotation> {
           _pickedImage = File('a');
         });
       } else {
-        print('No iamge has been picked');
+        //print('No iamge has been picked');
       }
     } else {
-      print('Something Went Wrong');
+      //print('Something Went Wrong');
     }
   }
 }
