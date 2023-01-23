@@ -13,8 +13,34 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddCat extends StatefulWidget {
-  const AddCat({Key? key}) : super(key: key);
+  AddCat(
+      {Key? key,
+      this.name,
+      this.price,
+      this.firstPrice,
+      this.minLimit,
+      this.type,
+      this.measurement,
+      this.productionBranch,
+      this.isEdit = true,
+      this.isPriceEdit = true,
+      this.isCatEdit = true,
+      this.isDetails = false,
+      this.isFromAnotherPage = false})
+      : super(key: key);
 
+  final String? name;
+  final String? price;
+  final String? firstPrice;
+  final String? minLimit;
+  final String? type;
+  final String? measurement;
+  final String? productionBranch;
+  bool isEdit;
+  bool isPriceEdit;
+  bool isCatEdit;
+  bool isFromAnotherPage;
+  bool isDetails;
   @override
   State<AddCat> createState() => _AddCatState();
 }
@@ -28,6 +54,20 @@ class _AddCatState extends State<AddCat> {
   TextEditingController controller2 = TextEditingController();
   TextEditingController controller3 = TextEditingController();
   TextEditingController controller4 = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    chose1 = widget.measurement;
+    chose2 = widget.type;
+    chose3 = widget.productionBranch;
+    controller1.text = widget.name ?? '';
+    controller2.text = widget.minLimit ?? '';
+    controller3.text = widget.firstPrice ?? '';
+    controller4.text = widget.price ?? '';
+    print(widget.isPriceEdit);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,11 +148,13 @@ class _AddCatState extends State<AddCat> {
                                 child: dropDown(
                                   const ['كيلو', 'متر', "قطعه", "لوح"],
                                   selectTalab: chose1,
-                                  onchanged: () => (val) {
-                                    setState(() {
-                                      chose1 = val;
-                                    });
-                                  },
+                                  onchanged: widget.isEdit == false
+                                      ? () {}
+                                      : () => (val) {
+                                            setState(() {
+                                              chose1 = val;
+                                            });
+                                          },
                                   label: 'وحده القياس',
                                   foColor: Colors.white,
                                   bgColor: ColorManager.primary,
@@ -130,14 +172,16 @@ class _AddCatState extends State<AddCat> {
                                   const [
                                     'مواد خام',
                                     'منتج التشغيل',
-                                    "منتج تام"
+                                    'مخزن منتج تام'
                                   ],
                                   selectTalab: chose2,
-                                  onchanged: () => (val) {
-                                    setState(() {
-                                      chose2 = val;
-                                    });
-                                  },
+                                  onchanged: widget.isEdit == false
+                                      ? () {}
+                                      : () => (val) {
+                                            setState(() {
+                                              chose2 = val;
+                                            });
+                                          },
                                   label: 'نوع الصنف',
                                   foColor: Colors.white,
                                   bgColor: ColorManager.primary,
@@ -164,6 +208,7 @@ class _AddCatState extends State<AddCat> {
                                     height: 60,
                                     child: DefaultInputForm(
                                       controller: controller1,
+                                      readOnly: !widget.isCatEdit,
                                       hint: '',
                                       label: '',
                                       onTab: () {},
@@ -205,6 +250,7 @@ class _AddCatState extends State<AddCat> {
                                     height: 60,
                                     child: DefaultInputForm(
                                       controller: controller2,
+                                      readOnly: !widget.isEdit,
                                       hint: '',
                                       label: '',
                                       onTab: () {},
@@ -237,6 +283,7 @@ class _AddCatState extends State<AddCat> {
                                     height: 60,
                                     child: DefaultInputForm(
                                       controller: controller3,
+                                      readOnly: !widget.isPriceEdit,
                                       hint: '',
                                       label: '',
                                       onTab: () {},
@@ -269,6 +316,7 @@ class _AddCatState extends State<AddCat> {
                                     height: 60,
                                     child: DefaultInputForm(
                                       controller: controller4,
+                                      readOnly: !widget.isEdit,
                                       hint: '',
                                       label: '',
                                       onTab: () {},
@@ -305,11 +353,13 @@ class _AddCatState extends State<AddCat> {
                                     "ديكور"
                                   ],
                                   selectTalab: chose3,
-                                  onchanged: () => (val) {
-                                    setState(() {
-                                      chose3 = val;
-                                    });
-                                  },
+                                  onchanged: widget.isEdit == false
+                                      ? () {}
+                                      : () => (val) {
+                                            setState(() {
+                                              chose3 = val;
+                                            });
+                                          },
                                   label: 'فرع الانتاج',
                                   foColor: Colors.white,
                                   bgColor: ColorManager.primary,
@@ -324,23 +374,28 @@ class _AddCatState extends State<AddCat> {
                           const SizedBox(
                             height: 100,
                           ),
-                          Botton(
-                            color: ColorManager.white,
-                            title: 'اضافه',
-                            onTap: () {
-                              pro.addMaterial(
-                                  '',
-                                  chose1!,
-                                  int.parse(controller2.text),
-                                  chose2!,
-                                  controller1.text,
-                                  int.parse(controller3.text),
-                                  double.parse(controller4.text),
-                                  chose3!,
-                                  0);
-                            },
-                            bgColor: ColorManager.black,
-                          ),
+                          widget.isDetails == true
+                              ? SizedBox()
+                              : Botton(
+                                  color: ColorManager.white,
+                                  title: 
+                                          widget.isFromAnotherPage
+                                      ? 'تعديل'
+                                      : 'اضافه',
+                                  onTap: () {
+                                    pro.addMaterial(
+                                        '',
+                                        chose1!,
+                                        int.parse(controller2.text),
+                                        chose2!,
+                                        controller1.text,
+                                        int.parse(controller3.text),
+                                        double.parse(controller4.text),
+                                        chose3!,
+                                        0);
+                                  },
+                                  bgColor: ColorManager.black,
+                                ),
                         ],
                       ),
                     ),

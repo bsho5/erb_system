@@ -4,6 +4,7 @@ import 'package:erb_system/resources/assets_manager.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/size_config.dart';
+import 'package:erb_system/utils/nav.dart';
 import 'package:erb_system/utils/search.dart';
 import 'package:erb_system/view/auth/component/text_fom_feild.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
@@ -77,8 +78,7 @@ class _CategoriesState extends State<Categories> {
           0,
           (previousValue, element) =>
               previousValue +
-              
-                  result[element]?['openingbalance'] * result[element]?['price']);
+              result[element]?['openingbalance'] * result[element]?['price']);
     });
   }
 
@@ -288,7 +288,46 @@ class _CategoriesState extends State<Categories> {
                                                               setState(() {
                                                                 selectedIndex =
                                                                     index;
-                                                                chose1 = val;
+                                                                // chose1 = val;
+                                                                if (val ==
+                                                                    'تعديل الصنف')
+                                                                  print(val);
+
+                                                                categoryNav(
+                                                                    context:
+                                                                        context,
+                                                                    isCatEdit: val == 'تعديل الصنف'
+                                                                        ? true
+                                                                        : false,
+                                                                    isDetails: val == 'تفاصيل'
+                                                                        ? true
+                                                                        : false,
+                                                                        isEdit: false,
+                                                                    isFromAnotherPage:
+                                                                        true,
+                                                                    isPriceEdit: val ==
+                                                                            'تعديل الرصيد'
+                                                                        ? true
+                                                                        : false,
+                                                                    name: result[dataId[index]]!['name']
+                                                                        .toString(),
+                                                                    price: result[dataId[index]]!['price']
+                                                                        .toString(),
+                                                                    firstPrice:
+                                                                        result[dataId[index]]!['openingbalance']
+                                                                            .toString(),
+                                                                    minLimit:
+                                                                        result[dataId[index]]!['minimumquantity']
+                                                                            .toString(),
+                                                                    type: result[dataId[index]]![
+                                                                            'type']
+                                                                        .toString(),
+                                                                    measurement:
+                                                                        result[dataId[index]]!['measurement']
+                                                                            .toString(),
+                                                                    productionBranch:
+                                                                        result[dataId[index]]!['productionline']
+                                                                            .toString());
                                                               });
                                                             },
                                                             label: 'خيارات',
@@ -436,7 +475,8 @@ class _CategoriesState extends State<Categories> {
                                             ),
                                             onPressed: () {
                                               setState(() {
-                                                ordersNumber = ordersNumber - 10;
+                                                ordersNumber =
+                                                    ordersNumber - 10;
                                               });
                                             },
                                           )),
@@ -467,8 +507,6 @@ class _CategoriesState extends State<Categories> {
     ));
   }
 }
-
-
 
 //  int pagesNumber =
 //                                             dataIdUnPaginated.length <
