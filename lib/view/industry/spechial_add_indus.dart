@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:erb_system/resources/assets_manager.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/size_config.dart';
+import 'package:erb_system/utils/search.dart';
 import 'package:erb_system/view/auth/component/text_fom_feild.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
 import 'package:erb_system/view/home/components/botton.dart';
@@ -49,6 +51,37 @@ class _IndustrySpecialAdditionState extends State<IndustrySpecialAddition> {
     "التكلفه",
     "اسم الاضافه",
   ];
+
+   List<String> dbDataId = [];
+  List<String> dataId = [];
+  List<String> dataIdUnPaginated = [];
+  Map<String, Map<String, dynamic>> result = {};
+  double total = 0;
+
+  void performSearch(String query) {
+    setState(() {
+      dataId = searchByWord(query, result);
+      print(dataId);
+      
+    });
+  }
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('ordersources')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              setState(() {
+                result[element.id] = element.data();
+
+                dbDataId.add(element.id);
+                dataId.add(element.id);
+               
+              });
+            }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,19 +156,22 @@ class _IndustrySpecialAdditionState extends State<IndustrySpecialAddition> {
                                         columnData: columnData,
                                         size: getProportionateScreenWidth(80),
                                         color: ColorManager.second,
-                                        rows: data
+                                        rows: dataId
                                             .map((data) => DataRow(cells: [
 
                                           DataCell(Text(
-                                            data['3'],
+                                            result[data]![
+                                                        'measurement'],
                                             style: style,
                                           )),
                                           DataCell(Text(
-                                            data['2'],
+                                           result[data]![
+                                                        'measurement'],
                                             style: style,
                                           )),
                                           DataCell(Text(
-                                            data['1'],
+                                            result[data]![
+                                                        'measurement'],
                                             style: style,
                                           )),
                                         ]))

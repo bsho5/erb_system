@@ -1,3 +1,4 @@
+import 'package:erb_system/controller/hr_controller/hr_controller.dart';
 import 'package:erb_system/resources/assets_manager.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
@@ -6,6 +7,7 @@ import 'package:erb_system/view/home/components/default_container.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../size_config.dart';
 import '../auth/component/text_fom_feild.dart';
@@ -55,12 +57,9 @@ class _PayrollState extends State<Payroll> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
+    var pro = Provider.of<AddHRController>(context);
     SizeConfig.init(context);
     TextStyle style = TextStyle(fontSize: getProportionateScreenWidth(5));
     // var format = DateFormat.yMd('ar');
@@ -107,8 +106,8 @@ class _PayrollState extends State<Payroll> {
                                         onPressed: () => _selectDate(context),
                                         style: ButtonStyle(
                                             backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.white)),
+                                                MaterialStateProperty.all(
+                                                    Colors.white)),
                                         child: Text(
                                           "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
                                           style: const TextStyle(
@@ -119,7 +118,6 @@ class _PayrollState extends State<Payroll> {
                                     ),
                                   ],
                                 ),
-
                                 Column(
                                   children: [
                                     Text(
@@ -204,7 +202,6 @@ class _PayrollState extends State<Payroll> {
                                   ),
                                 ],
                               ),
-
                               Column(
                                 children: [
                                   Text(
@@ -257,8 +254,6 @@ class _PayrollState extends State<Payroll> {
                                   ),
                                 ],
                               ),
-
-
                             ],
                           ),
                           const SizedBox(
@@ -268,14 +263,17 @@ class _PayrollState extends State<Payroll> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Container(
-                                width:
-                                MediaQuery.of(context).size.width <= 500
+                                width: MediaQuery.of(context).size.width <= 500
                                     ? getProportionateScreenWidth(65)
                                     : getProportionateScreenWidth(43),
                                 height: getProportionateScreenHeight(90),
                                 padding: const EdgeInsets.only(top: 35),
                                 child: dropDown(
-                                  const ["خزينة المصنع", "البنك الاهلي","بنك مصر",],
+                                  const [
+                                    "خزينة المصنع",
+                                    "البنك الاهلي",
+                                    "بنك مصر",
+                                  ],
                                   selectTalab: selectTalab,
                                   onchanged: () => (val) {
                                     setState(() {
@@ -323,7 +321,29 @@ class _PayrollState extends State<Payroll> {
                             bgColor: Colors.black,
                             color: Colors.white,
                             title: 'صرف',
-                            onTap: () {},
+                            onTap: () async {
+                              await pro.salaries(
+                                name: controller2.text,
+                                monthSalary:
+                                    int.parse(controller1.text).toDouble(),
+                                totalSalary:
+                                    int.parse(controller5.text).toDouble(),
+                                fromTreasury: selectTalab ?? '',
+                                residual:
+                                    int.parse(controller3.text).toDouble(),
+                                salaryOrLoan:
+                                    int.parse(controller4.text).toDouble(),
+                                salaryDisbursementAmount:
+                                    int.parse(controller6.text).toDouble(),
+                              );
+                              controller1.clear();
+                              controller2.clear();
+                              controller3.clear();
+                              controller4.clear();
+                              controller5.clear();
+                              controller6.clear();
+                              
+                            },
                           )
                         ],
                       ),

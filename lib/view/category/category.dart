@@ -5,6 +5,8 @@ import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/size_config.dart';
 import 'package:erb_system/utils/nav.dart';
+import 'package:erb_system/utils/pop_up.dart' as popUp;
+import 'package:universal_html/html.dart' as html;
 import 'package:erb_system/utils/search.dart';
 import 'package:erb_system/view/auth/component/text_fom_feild.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
@@ -15,6 +17,7 @@ import 'package:erb_system/view/home/components/drop_down.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart';
 
 class Categories extends StatefulWidget {
   const Categories({Key? key}) : super(key: key);
@@ -30,6 +33,7 @@ class _CategoriesState extends State<Categories> {
   int? selectedIndex;
   TextEditingController controller1 = TextEditingController();
   TextEditingController controller2 = TextEditingController();
+  TextEditingController popUpController = TextEditingController();
   int ordersNumber = 30;
   List data = [
     {
@@ -290,44 +294,84 @@ class _CategoriesState extends State<Categories> {
                                                                     index;
                                                                 // chose1 = val;
                                                                 if (val ==
-                                                                    'تعديل الصنف')
-                                                                  print(val);
-
-                                                                categoryNav(
-                                                                    context:
-                                                                        context,
-                                                                    isCatEdit: val == 'تعديل الصنف'
-                                                                        ? true
-                                                                        : false,
-                                                                    isDetails: val == 'تفاصيل'
-                                                                        ? true
-                                                                        : false,
-                                                                        isEdit: false,
-                                                                    isFromAnotherPage:
-                                                                        true,
-                                                                    isPriceEdit: val ==
-                                                                            'تعديل الرصيد'
-                                                                        ? true
-                                                                        : false,
-                                                                    name: result[dataId[index]]!['name']
-                                                                        .toString(),
-                                                                    price: result[dataId[index]]!['price']
-                                                                        .toString(),
-                                                                    firstPrice:
-                                                                        result[dataId[index]]!['openingbalance']
-                                                                            .toString(),
-                                                                    minLimit:
+                                                                    'تعديل الرصيد') {
+                                                                  popUp.showPopUp(
+                                                                      context,
+                                                                      'title',
+                                                                      '  الرصيد  ',
+                                                                      () async{
+                                                                   await pro.addMaterial(
+                                                                      '',
+                                                                      result[dataId[index]]![
+                                                                              'measurement']
+                                                                          .toString(),
+                                                                      
                                                                         result[dataId[index]]!['minimumquantity']
-                                                                            .toString(),
-                                                                    type: result[dataId[index]]![
-                                                                            'type']
-                                                                        .toString(),
-                                                                    measurement:
-                                                                        result[dataId[index]]!['measurement']
-                                                                            .toString(),
-                                                                    productionBranch:
-                                                                        result[dataId[index]]!['productionline']
-                                                                            .toString());
+                                                                           ,
+                                                                      result[dataId[index]]![
+                                                                              'type']
+                                                                          .toString(),
+                                                                      result[dataId[index]]![
+                                                                              'name']
+                                                                          .toString(),
+                                                                      int.parse(
+                                                                          popUp.text
+                                                                          ),
+                                                                     
+                                                                              result[dataId[index]]!['price']
+                                                                          ,
+                                                                      result[dataId[index]]![
+                                                                              'productionline']
+                                                                          .toString(),
+                                                                      
+                                                                          result[dataId[index]]![
+                                                                              'quantity'],
+                                                                    );
+                                                                     html.window.location.reload();
+                                                                  }, 'تعديل',
+                                                                      popUpController);
+                                                                } else {
+                                                                  if (val ==
+                                                                      'تعديل الصنف')
+                                                                    print(val);
+
+                                                                  categoryNav(
+                                                                      context:
+                                                                          context,
+                                                                      isCatEdit: val == 'تعديل الصنف'
+                                                                          ? true
+                                                                          : false,
+                                                                      isDetails: val == 'تفاصيل'
+                                                                          ? true
+                                                                          : false,
+                                                                      isEdit:
+                                                                          false,
+                                                                      isFromAnotherPage:
+                                                                          true,
+                                                                      isPriceEdit: val == 'تعديل الرصيد'
+                                                                          ? true
+                                                                          : false,
+                                                                      name: result[dataId[index]]!['name']
+                                                                          .toString(),
+                                                                      price: result[dataId[index]]![
+                                                                              'price']
+                                                                          .toString(),
+                                                                      firstPrice:
+                                                                          result[dataId[index]]!['openingbalance']
+                                                                              .toString(),
+                                                                      minLimit:
+                                                                          result[dataId[index]]!['minimumquantity']
+                                                                              .toString(),
+                                                                      type: result[dataId[index]]![
+                                                                              'type']
+                                                                          .toString(),
+                                                                      measurement:
+                                                                          result[dataId[index]]!['measurement']
+                                                                              .toString(),
+                                                                      productionBranch:
+                                                                          result[dataId[index]]!['productionline']
+                                                                              .toString());
+                                                                }
                                                               });
                                                             },
                                                             label: 'خيارات',

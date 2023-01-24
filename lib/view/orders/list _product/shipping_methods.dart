@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:erb_system/utils/search.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
 import 'package:erb_system/view/home/components/default_container.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
@@ -30,9 +32,38 @@ class _ShippingMethodsState extends State<ShippingMethods> {
 
   List<String> columnData = [
     "الاسم",
-    "طريقة",
+    // "طريقة",
   ];
+List<String> dbDataId = [];
+  List<String> dataId = [];
+  List<String> dataIdUnPaginated = [];
+  Map<String, Map<String, dynamic>> result = {};
+  double total = 0;
 
+  void performSearch(String query) {
+    setState(() {
+      dataId = searchByWord(query, result);
+      print(dataId);
+      
+    });
+  }
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('shippingtypes')
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              setState(() {
+                result[element.id] = element.data();
+
+                dbDataId.add(element.id);
+                dataId.add(element.id);
+               
+              });
+            }));
+  }
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -115,16 +146,17 @@ class _ShippingMethodsState extends State<ShippingMethods> {
                                   child: DefaultTable(
                                     color: ColorManager.second,
                                     columnData: columnData,
-                                    rows: data
+                                    rows: dataId
                                         .map((data) => DataRow(cells: [
                                               DataCell(Text(
-                                                data['2'],
+                                                result[data]![
+                                                        'type'],
                                                 style: style,
                                               )),
-                                              DataCell(Text(
-                                                data['1'],
-                                                style: style,
-                                              )),
+                                              // DataCell(Text(
+                                              //   data['1'],
+                                              //   style: style,
+                                              // )),
                                             ]))
                                         .toList(),
                                   ),

@@ -73,7 +73,7 @@ class AddHRController with ChangeNotifier {
     notifyListeners();
   }
 
-  void salaries({
+  Future<void> salaries({
     required String name,
     required double monthSalary,
     required double totalSalary,
