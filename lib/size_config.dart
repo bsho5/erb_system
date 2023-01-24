@@ -6,10 +6,10 @@ class SizeConfig {
   static late double screenHeight;
   static late Orientation orientation;
 
-  static void  init(BuildContext context) {
+  static void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);
     screenWidth = _mediaQueryData.size.width;
-    print('$screenWidth');
+    //print('$screenWidth');
     screenHeight = _mediaQueryData.size.height;
     orientation = _mediaQueryData.orientation;
   }

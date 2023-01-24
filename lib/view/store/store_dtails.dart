@@ -52,11 +52,13 @@ class _StoreDetailsState extends State<StoreDetails> {
   void performSearch(String query) {
     setState(() {
       dataId = searchByWord(query, result);
-      print(dataId);
+      //print(dataId);
       total = dataId.fold(
           0,
           (previousValue, element) =>
-              previousValue + int.parse(result[element]?['amount']*result[element]?['amount']));
+              previousValue +
+              int.parse(
+                  result[element]?['amount'] * result[element]?['amount']));
     });
   }
 
@@ -74,9 +76,8 @@ class _StoreDetailsState extends State<StoreDetails> {
                 result[element.id] = element.data();
                 dbDataId.add(element.id);
                 dataId.add(element.id);
-                 total = total +
-                    (element.data()['quantity'] *
-                       element.data()['price']);
+                total = total +
+                    (element.data()['quantity'] * element.data()['price']);
               });
             }));
   }

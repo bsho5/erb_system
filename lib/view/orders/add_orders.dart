@@ -91,7 +91,7 @@ class _AddOrderState extends State<AddOrder> {
 
   changeIndex(int changeIndex) {
     index = changeIndex + 1;
-    print(index);
+    //print(index);
   }
 
   @override
@@ -291,7 +291,7 @@ class _AddOrderState extends State<AddOrder> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                       Container(
+                                    Container(
                                       width:
                                           MediaQuery.of(context).size.width <=
                                                   917
@@ -307,29 +307,31 @@ class _AddOrderState extends State<AddOrder> {
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: Center(
-                                        child:      DropdownSearch<String>(
-                                    clearButtonProps:
-                                        const ClearButtonProps(isVisible: true),
-                                    popupProps: PopupProps.menu(
-                                      showSearchBox: true,
-                                      showSelectedItems: true,
-                                      // disabledItemFn: (String s) =>
-                                      //     s.startsWith('I'),
-                                    ),
-                                    items: governorates,
-                                    dropdownDecoratorProps:
-                                        DropDownDecoratorProps(
-                                      dropdownSearchDecoration: InputDecoration(
-                                          hintText: "المحافظة",
-                                          border: InputBorder.none),
-                                    ),
-                                    onChanged: (v) {
-                                      setState(() {
-                                         governorate= v;
-                                      });
-                                    },
-                                  ),
-                              ),
+                                        child: DropdownSearch<String>(
+                                          clearButtonProps:
+                                              const ClearButtonProps(
+                                                  isVisible: true),
+                                          popupProps: PopupProps.menu(
+                                            showSearchBox: true,
+                                            showSelectedItems: true,
+                                            // disabledItemFn: (String s) =>
+                                            //     s.startsWith('I'),
+                                          ),
+                                          items: governorates,
+                                          dropdownDecoratorProps:
+                                              DropDownDecoratorProps(
+                                            dropdownSearchDecoration:
+                                                InputDecoration(
+                                                    hintText: "المحافظة",
+                                                    border: InputBorder.none),
+                                          ),
+                                          onChanged: (v) {
+                                            setState(() {
+                                              governorate = v;
+                                            });
+                                          },
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -350,39 +352,40 @@ class _AddOrderState extends State<AddOrder> {
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       child: Center(
-                                        child:  DropdownSearch<String>(
-                                      clearButtonProps: const ClearButtonProps(
-                                          isVisible: true),
-                                      popupProps: PopupProps.menu(
-                                        showSearchBox: true,
-                                        showSelectedItems: true,
-                                        searchFieldProps: TextFieldProps(
-                                            cursorColor: ColorManager.primary),
-                                        // disabledItemFn: (String s) =>
-                                        //     s.startsWith('I'),
+                                        child: DropdownSearch<String>(
+                                          clearButtonProps:
+                                              const ClearButtonProps(
+                                                  isVisible: true),
+                                          popupProps: PopupProps.menu(
+                                            showSearchBox: true,
+                                            showSelectedItems: true,
+                                            searchFieldProps: TextFieldProps(
+                                                cursorColor:
+                                                    ColorManager.primary),
+                                            // disabledItemFn: (String s) =>
+                                            //     s.startsWith('I'),
+                                          ),
+                                          items: governorateCities(
+                                                  governorate ?? '') ??
+                                              [],
+                                          dropdownDecoratorProps:
+                                              DropDownDecoratorProps(
+                                            dropdownSearchDecoration:
+                                                InputDecoration(
+                                                    hintText: "المدينة",
+                                                    border: InputBorder.none),
+                                          ),
+                                          onChanged: (v) {
+                                            setState(() {
+                                              city = v;
+                                            });
+                                          },
+                                        ),
                                       ),
-                                      items: governorateCities(
-                                              governorate ?? '') ??
-                                          [],
-                                      dropdownDecoratorProps:
-                                          DropDownDecoratorProps(
-                                        dropdownSearchDecoration:
-                                            InputDecoration(
-                                                hintText: "المدينة",
-                                                border: InputBorder.none),
-                                      ),
-                                      onChanged: (v) {
-                                        setState(() {
-                                          city = v;
-                                        });
-                                      },
-                                    ),
-                                   ),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
-                                 
                                   ],
                                 ),
                                 Column(
@@ -819,7 +822,7 @@ class _AddOrderState extends State<AddOrder> {
                                               "quantity": int.parse(
                                                   qunatityControlor.text),
                                             });
-                                            print(table);
+                                            //print(table);
                                           });
                                         } else {
                                           setState(() {
@@ -840,7 +843,7 @@ class _AddOrderState extends State<AddOrder> {
                                               "quantity": int.parse(
                                                   qunatityControlor.text),
                                             });
-                                            print(table);
+                                            //print(table);
                                           });
                                         }
                                       }
@@ -887,31 +890,35 @@ class _AddOrderState extends State<AddOrder> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                             controller5.text.isNotEmpty? Container(
-                                width: MediaQuery.of(context).size.width <= 708
-                                    ? getProportionateScreenWidth(65)
-                                    : getProportionateScreenWidth(43),
-                                height: getProportionateScreenHeight(90),
-                                padding: const EdgeInsets.only(top: 35),
-                                child: dropDown(
-                                  const [
-                                    "companytreasury",
-                                    "bankalahly",
-                                    "bankmasr",
-                                    "paymob"
-                                  ],
-                                  selectTalab: payment,
-                                  onchanged: () => (val) {
-                                    setState(() {
-                                      payment = val;
-                                    });
-                                  },
-                                  label: 'الخزينه',
-                                  foColor: Colors.white,
-                                  bgColor: ColorManager.primary,
-                                  dpColor: ColorManager.primary,
-                                ),
-                              ):SizedBox(),
+                              controller5.text.isNotEmpty
+                                  ? Container(
+                                      width:
+                                          MediaQuery.of(context).size.width <=
+                                                  708
+                                              ? getProportionateScreenWidth(65)
+                                              : getProportionateScreenWidth(43),
+                                      height: getProportionateScreenHeight(90),
+                                      padding: const EdgeInsets.only(top: 35),
+                                      child: dropDown(
+                                        const [
+                                          "companytreasury",
+                                          "bankalahly",
+                                          "bankmasr",
+                                          "paymob"
+                                        ],
+                                        selectTalab: payment,
+                                        onchanged: () => (val) {
+                                          setState(() {
+                                            payment = val;
+                                          });
+                                        },
+                                        label: 'الخزينه',
+                                        foColor: Colors.white,
+                                        bgColor: ColorManager.primary,
+                                        dpColor: ColorManager.primary,
+                                      ),
+                                    )
+                                  : SizedBox(),
                               Column(
                                 children: [
                                   Text('صافي القيمة', style: style),
@@ -969,10 +976,9 @@ class _AddOrderState extends State<AddOrder> {
                                       controller: controller5,
                                       hint: '',
                                       label: '',
-                                      onChanged: (v){
-                                        setState(() {
-                                        
-                                      });},
+                                      onChanged: (v) {
+                                        setState(() {});
+                                      },
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -1210,10 +1216,10 @@ class _AddOrderState extends State<AddOrder> {
         var selected = File(image.path);
         setState(() {
           _pickedImage = selected;
-          print(_pickedImage);
+          //print(_pickedImage);
         });
       } else {
-        print('No iamge has been picked');
+        //print('No iamge has been picked');
       }
     } else if (kIsWeb) {
       final ImagePicker _picker = ImagePicker();
@@ -1223,13 +1229,13 @@ class _AddOrderState extends State<AddOrder> {
         setState(() {
           webImage = f;
           _pickedImage = File('a');
-            print(_pickedImage);
+          //print(_pickedImage);
         });
       } else {
-        print('No iamge has been picked');
+        //print('No iamge has been picked');
       }
     } else {
-      print('Something Went Wrong');
+      //print('Something Went Wrong');
     }
   }
 }

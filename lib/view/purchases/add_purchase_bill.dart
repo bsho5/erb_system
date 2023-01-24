@@ -21,16 +21,16 @@ import 'package:provider/provider.dart';
 class AddPurchaseBill extends StatefulWidget {
   AddPurchaseBill(
       {Key? key,
-       this.status,
-       this.date,
-       this.supName,
-       this.remainingBalance,
-       this.paid,
-       this.shipping,
-       this.treasury,
-       this.image,
-       this.id,
-       this.isEdit = false})
+      this.status,
+      this.date,
+      this.supName,
+      this.remainingBalance,
+      this.paid,
+      this.shipping,
+      this.treasury,
+      this.image,
+      this.id,
+      this.isEdit = false})
       : super(key: key);
   String? status;
   String? date;
@@ -112,7 +112,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
         .get()
         .then((value) => value.docs.forEach((element) {
               setState(() {
-                print(element.id);
+                //print(element.id);
                 result[element.id] = element.data();
                 dbDataId.add(element.id);
                 dataId.add(element.id);
@@ -144,7 +144,10 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                           const SizedBox(
                             height: 50,
                           ),
-                          DefaultContainer(title: widget.isEdit ?' تفاصيل فاتوره مشتريات ': 'اضافه فاتوره مشتريات'),
+                          DefaultContainer(
+                              title: widget.isEdit
+                                  ? ' تفاصيل فاتوره مشتريات '
+                                  : 'اضافه فاتوره مشتريات'),
                           const SizedBox(
                             height: 50,
                           ),
@@ -214,61 +217,72 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                 widget.isEdit?Text(widget.supName??''): Consumer<AddSuppliersController>(
-                                    builder: (context, valu, child) {
-                                      return FutureBuilder(
-                                          future: valu.getSupplier(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData) {
-                                              List sup = snapshot.data as List;
+                                  widget.isEdit
+                                      ? Text(widget.supName ?? '')
+                                      : Consumer<AddSuppliersController>(
+                                          builder: (context, valu, child) {
+                                            return FutureBuilder(
+                                                future: valu.getSupplier(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    List sup =
+                                                        snapshot.data as List;
 
-                                              return SizedBox(
-                                                width:
-                                                    getProportionateScreenWidth(
-                                                        50),
-                                                height: 60,
-                                                child: DropdownSearch<String>(
-                                                  popupProps: PopupProps.menu(
-                                                    showSelectedItems: true,
-                                                    showSearchBox: true,
-                                                    searchFieldProps:
-                                                        TextFieldProps(
-                                                            cursorColor:
-                                                                ColorManager
-                                                                    .primary),
-                                                    // disabledItemFn:
-                                                    //     (String s) =>
-                                                    //         s.startsWith('I'),
-                                                  ),
-                                                  items: List.generate(
-                                                      widget.isEdit
-                                                          ? dataId.length
-                                                          : sup.length,
-                                                      (index) => widget.isEdit
-                                                          ? (result[
-                                                                  dataId[index]]
-                                                              ?['name'])
-                                                          : sup[index]['name']),
-                                                  dropdownDecoratorProps:
-                                                       DropDownDecoratorProps(
-                                                    dropdownSearchDecoration:
-                                                        InputDecoration(
-                                                      hintText:widget.isEdit?supName??'': "Enter Name",
-                                                    ),
-                                                  ),
-                                                  onChanged: (v) {
-                                                    setState(() {
-                                                      supName = v;
-                                                    });
-                                                  },
-                                                ),
-                                              );
-                                            } else {
-                                              return const CircularProgressIndicator();
-                                            }
-                                          });
-                                    },
-                                  )
+                                                    return SizedBox(
+                                                      width:
+                                                          getProportionateScreenWidth(
+                                                              50),
+                                                      height: 60,
+                                                      child: DropdownSearch<
+                                                          String>(
+                                                        popupProps:
+                                                            PopupProps.menu(
+                                                          showSelectedItems:
+                                                              true,
+                                                          showSearchBox: true,
+                                                          searchFieldProps:
+                                                              TextFieldProps(
+                                                                  cursorColor:
+                                                                      ColorManager
+                                                                          .primary),
+                                                          // disabledItemFn:
+                                                          //     (String s) =>
+                                                          //         s.startsWith('I'),
+                                                        ),
+                                                        items: List.generate(
+                                                            widget.isEdit
+                                                                ? dataId.length
+                                                                : sup.length,
+                                                            (index) => widget
+                                                                    .isEdit
+                                                                ? (result[dataId[
+                                                                        index]]
+                                                                    ?['name'])
+                                                                : sup[index]
+                                                                    ['name']),
+                                                        dropdownDecoratorProps:
+                                                            DropDownDecoratorProps(
+                                                          dropdownSearchDecoration:
+                                                              InputDecoration(
+                                                            hintText: widget
+                                                                    .isEdit
+                                                                ? supName ?? ''
+                                                                : "Enter Name",
+                                                          ),
+                                                        ),
+                                                        onChanged: (v) {
+                                                          setState(() {
+                                                            supName = v;
+                                                          });
+                                                        },
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return const CircularProgressIndicator();
+                                                  }
+                                                });
+                                          },
+                                        )
                                 ],
                               ),
                               SizedBox(
@@ -405,7 +419,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                       //                     });
                                       //                   });
 
-                                      //                   print(v);
+                                      //                   //print(v);
                                       //                   setState(() {});
                                       //                 },
                                       //               ),
@@ -879,7 +893,7 @@ class _AddPurchaseBillState extends State<AddPurchaseBill> {
                                             measurement: catMeasurement!);
                                       });
                                     } catch (e) {
-                                      print(e.toString());
+                                      //print(e.toString());
                                     }
                                   },
                                   bgColor: ColorManager.black,

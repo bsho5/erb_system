@@ -111,18 +111,18 @@ class DropDownList extends StatelessWidget {
               DateTime now = DateTime.now();
               String convertedDateTime =
                   "${now.year.toString()}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}";
-              print(convertedDateTime);
+              //print(convertedDateTime);
             },
             trailing: Image.asset(ImageAssets.iconDropDown2),
             title: Center(
               child: MediaQuery.of(context).size.width < 1500
                   ? const Text(' ')
                   : Text(
-                'الرئيسيه',
-                style: TextStyle(
-                    fontSize: getProportionateScreenWidth(5),
-                    color: Colors.white),
-              ),
+                      'الرئيسيه',
+                      style: TextStyle(
+                          fontSize: getProportionateScreenWidth(5),
+                          color: Colors.white),
+                    ),
             ),
             leading: Container(
               width: 2,

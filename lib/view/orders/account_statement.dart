@@ -202,7 +202,7 @@ class _account_statementState extends State<account_statement> {
                               onTab: () {},
                               validate: () {},
                               onSave: () => (val) {
-                                print(val);
+                                //print(val);
                               },
                               passFun: () {},
                               color: Colors.white70,
@@ -235,7 +235,7 @@ class _account_statementState extends State<account_statement> {
                               onTab: () {},
                               validate: () {},
                               onSave: () => (val) {
-                                print(val);
+                                //print(val);
                               },
                               passFun: () {},
                               color: Colors.white70,

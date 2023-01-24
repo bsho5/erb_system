@@ -69,7 +69,7 @@ class _AddExpensesState extends State<AddExpenses> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // void validate(Map<String, dynamic> data) {
-  //   print(data);
+  //   //print(data);
   //   Future.delayed(const Duration(seconds: 1), () {
   //     if (_formKey.currentState!.validate()) {
   //       FirebaseFirestore.instance.collection('finance').add(data);
@@ -96,8 +96,8 @@ class _AddExpensesState extends State<AddExpenses> {
         .collection('treasuryactions')
         .get()
         .then((value) => value.docs.forEach((element) {
-      resultAfterRemove[element.id] = element.data();
-    }));
+              resultAfterRemove[element.id] = element.data();
+            }));
     resultAfterRemove.forEach((key, value) {
       if (value.values.any((v) => v.toString().contains(treasury!))) {
         if (resultAfterRemove[key]?['balance'] < amount) {
@@ -155,9 +155,9 @@ class _AddExpensesState extends State<AddExpenses> {
                               children: [
                                 Container(
                                   width:
-                                  MediaQuery.of(context).size.width <= 500
-                                      ? getProportionateScreenWidth(65)
-                                      : getProportionateScreenWidth(43),
+                                      MediaQuery.of(context).size.width <= 500
+                                          ? getProportionateScreenWidth(65)
+                                          : getProportionateScreenWidth(43),
                                   height: getProportionateScreenHeight(90),
                                   padding: const EdgeInsets.only(top: 35),
                                   child: dropDown(
@@ -209,10 +209,10 @@ class _AddExpensesState extends State<AddExpenses> {
                                   children: [
                                     Container(
                                       width:
-                                      MediaQuery.of(context).size.width <=
-                                          500
-                                          ? getProportionateScreenWidth(65)
-                                          : getProportionateScreenWidth(43),
+                                          MediaQuery.of(context).size.width <=
+                                                  500
+                                              ? getProportionateScreenWidth(65)
+                                              : getProportionateScreenWidth(43),
                                       height: getProportionateScreenHeight(90),
                                       padding: const EdgeInsets.only(top: 35),
                                       child: dropDown(
@@ -276,13 +276,13 @@ class _AddExpensesState extends State<AddExpenses> {
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Icon(Icons.more_horiz),
                                             Text(
@@ -320,13 +320,13 @@ class _AddExpensesState extends State<AddExpenses> {
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Icon(Icons.more_horiz),
                                             Text(
@@ -356,13 +356,13 @@ class _AddExpensesState extends State<AddExpenses> {
                                 height: getProportionateScreenHeight(132),
                                 decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: Colors.black,
-                                      width: 2,
-                                    )),
+                                  color: Colors.black,
+                                  width: 2,
+                                )),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
                                       'ارفاق ايصال الدفع',
@@ -373,9 +373,9 @@ class _AddExpensesState extends State<AddExpenses> {
                                         child: Image.asset(
                                           ImageAssets.iconDropDown20,
                                           width:
-                                          getProportionateScreenWidth(35),
+                                              getProportionateScreenWidth(35),
                                           height:
-                                          getProportionateScreenHeight(85),
+                                              getProportionateScreenHeight(85),
                                         ))
                                   ],
                                 ),
@@ -387,76 +387,74 @@ class _AddExpensesState extends State<AddExpenses> {
                           ),
                           widget.isEdit
                               ? Botton(
-                            bgColor: Colors.black,
-                            color: Colors.white,
-                            title: widget.isFromAnotherPage
-                                ? 'تعديل'
-                                : 'صرف',
-                            onTap: () async {
-                              // if (_formKey.currentState!.validate()) {
-                              await compareTreasury(selectTalab,
-                                  int.parse(controller1.text));
-                              compare == compare;
+                                  bgColor: Colors.black,
+                                  color: Colors.white,
+                                  title: widget.isFromAnotherPage
+                                      ? 'تعديل'
+                                      : 'صرف',
+                                  onTap: () async {
+                                    // if (_formKey.currentState!.validate()) {
+                                    await compareTreasury(selectTalab,
+                                        int.parse(controller1.text));
+                                    compare == compare;
 
-                              if (controller1.text == '' ||
-                                  controller2.text == '' ||
-                                  typeOrder == '' ||
-                                  notesTextController.text == '' ||
-                                  selectTalab == '') {
-
-
-                              } else {
-                                if (compare == true) {
-                                  if (widget.id == null) {
-                                    await FirebaseFirestore.instance
-                                        .collection('finance')
-                                        .add({
-                                      'actiontaker': '',
-                                      'amount': controller1.text,
-                                      'date': now,
-                                      'description': controller2.text,
-                                      'expensetype': typeOrder,
-                                      'image': '',
-                                      'notes': notesTextController.text,
-                                      'treasury': selectTalab,
-                                    });
-                                    setState(() {
-                                      html.window.location.reload();
-                                    });
-                                  } else {
-                                    await FirebaseFirestore.instance
-                                        .collection('finance')
-                                        .doc(widget.id)
-                                        .update({
-                                      'actiontaker': '',
-                                      'amount': controller1.text,
-                                      'date': now,
-                                      'description': controller2.text,
-                                      'expensetype': typeOrder,
-                                      'image': '',
-                                      'notes': notesTextController.text,
-                                      'treasury': selectTalab,
-                                    });
-                                  }
-                                  setState(() {
-                                    html.window.location.reload();
-                                  });
-                                } else {
-                                  final snackBar = SnackBar(
-                                    content: Text(
-                                        'هذا المبلغ غير متوفر في الوقت الحالي لدى ' +
-                                            selectTalab.toString()),
+                                    if (controller1.text == '' ||
+                                        controller2.text == '' ||
+                                        typeOrder == '' ||
+                                        notesTextController.text == '' ||
+                                        selectTalab == '') {
+                                    } else {
+                                      if (compare == true) {
+                                        if (widget.id == null) {
+                                          await FirebaseFirestore.instance
+                                              .collection('finance')
+                                              .add({
+                                            'actiontaker': '',
+                                            'amount': controller1.text,
+                                            'date': now,
+                                            'description': controller2.text,
+                                            'expensetype': typeOrder,
+                                            'image': '',
+                                            'notes': notesTextController.text,
+                                            'treasury': selectTalab,
+                                          });
+                                          setState(() {
+                                            html.window.location.reload();
+                                          });
+                                        } else {
+                                          await FirebaseFirestore.instance
+                                              .collection('finance')
+                                              .doc(widget.id)
+                                              .update({
+                                            'actiontaker': '',
+                                            'amount': controller1.text,
+                                            'date': now,
+                                            'description': controller2.text,
+                                            'expensetype': typeOrder,
+                                            'image': '',
+                                            'notes': notesTextController.text,
+                                            'treasury': selectTalab,
+                                          });
+                                        }
+                                        setState(() {
+                                          html.window.location.reload();
+                                        });
+                                      } else {
+                                        final snackBar = SnackBar(
+                                          content: Text(
+                                              'هذا المبلغ غير متوفر في الوقت الحالي لدى ' +
+                                                  selectTalab.toString()),
 //
-                                  );
+                                        );
 
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                }
-                              }
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
+                                      }
+                                    }
 
-                              // } else {}
-                            },
-                          )
+                                    // } else {}
+                                  },
+                                )
                               : SizedBox()
                         ],
                       ),

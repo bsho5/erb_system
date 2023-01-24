@@ -102,7 +102,8 @@ class _ExpensesState extends State<Expenses> {
       });
     }
   }
-   List<String> dbDataId = [];
+
+  List<String> dbDataId = [];
   List<String> dataId = [];
   double total = 0;
   Map<String, Map<String, dynamic>> result = {};
@@ -187,7 +188,7 @@ class _ExpensesState extends State<Expenses> {
                                       label: '',
                                       onChanged: (v) {
                                         setState(() {
-                                          print(v);
+                                          //print(v);
                                           if (v.isNotEmpty) {
                                             performSearch(v);
                                           } else {

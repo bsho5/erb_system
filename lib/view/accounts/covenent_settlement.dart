@@ -105,24 +105,21 @@ class _CovenantSettlementState extends State<CovenantSettlement> {
         .then((value) => value.docs.forEach((element) {
               resultAfterRemove[element.id] = element.data();
             }));
-    resultAfterRemove.forEach((key, value)async {
+    resultAfterRemove.forEach((key, value) async {
       if (value.values.any((v) => v.toString().contains(treasury!))) {
-      
-         
-          treasuryId = key;
-          plus = resultAfterRemove[key]?['balance'] + amount;
-          print(plus);
-          await FirebaseFirestore.instance
-              .collection('treasuryactions')
-              .doc(key)
-              .update({
-            "balance": plus,
-            "id": resultAfterRemove[key]?['id'],
-            "name": resultAfterRemove[key]?['name'],
-            "type": resultAfterRemove[key]?['type'],
-            "usage": resultAfterRemove[key]?['usage'],
-          });
-        
+        treasuryId = key;
+        plus = resultAfterRemove[key]?['balance'] + amount;
+        //print(plus);
+        await FirebaseFirestore.instance
+            .collection('treasuryactions')
+            .doc(key)
+            .update({
+          "balance": plus,
+          "id": resultAfterRemove[key]?['id'],
+          "name": resultAfterRemove[key]?['name'],
+          "type": resultAfterRemove[key]?['type'],
+          "usage": resultAfterRemove[key]?['usage'],
+        });
       }
     });
   }
@@ -445,36 +442,20 @@ class _CovenantSettlementState extends State<CovenantSettlement> {
                             bgColor: Colors.black,
                             color: Colors.white,
                             title: 'تسويه',
-                            onTap: () async{
+                            onTap: () async {
                               setState(() {
                                 if (controller2.text == '' || chose1 == '') {
-                              } else {
-                                
+                                } else {
                                   compareTreasury(
                                       chose1, int.parse(controller2.text));
-                                      
-                              
-                                
-                                
-                               
-                                
-                              }
-                              html.window.location.reload();
+                                }
+                                html.window.location.reload();
                               });
                               if (controller2.text == '' || chose1 == '') {
                               } else {
-                                
-                                  await compareTreasury(
-                                      chose1, int.parse(controller2.text));
-                                      
-                              
-                                
-                                
-                               
-                                
+                                await compareTreasury(
+                                    chose1, int.parse(controller2.text));
                               }
-                             
-
                             },
                           )
                         ],

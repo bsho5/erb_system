@@ -51,10 +51,11 @@ class _ConfirmIndusState extends State<ConfirmIndus> {
     super.initState();
     controller2.addListener(() {
       setState(() {
-        finalPrice = totalPrice*int.parse(controller2.text);
+        finalPrice = totalPrice * int.parse(controller2.text);
       });
     });
   }
+
   int totalPrice = 0;
   int finalPrice = 0;
 
@@ -102,9 +103,10 @@ class _ConfirmIndusState extends State<ConfirmIndus> {
                                   SizedBox(
                                     width: getProportionateScreenWidth(50),
                                     height: 60,
-                                    child: Center(child:
-                                    Text((finalPrice.toString()),)
-                                    ),
+                                    child: Center(
+                                        child: Text(
+                                      (finalPrice.toString()),
+                                    )),
                                   ),
                                 ],
                               ),
@@ -135,7 +137,6 @@ class _ConfirmIndusState extends State<ConfirmIndus> {
                                       validate: () {},
                                       onSave: () {},
                                       passFun: () {},
-
                                       color: Colors.white70,
                                       obscureText: false,
                                     ),
@@ -145,79 +146,83 @@ class _ConfirmIndusState extends State<ConfirmIndus> {
                               SizedBox(
                                 width: getProportionateScreenWidth(20),
                               ),
-                              chose1!=null
-                                  ?Consumer<ManufacturingController>(
-                                builder: (context, valu, child) {
-                                  return FutureBuilder(
-                                      future: valu.getManfuctureType(chose1!),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasData) {
-                                          List sup =
-                                          snapshot.data as List;
+                              chose1 != null
+                                  ? Consumer<ManufacturingController>(
+                                      builder: (context, valu, child) {
+                                        return FutureBuilder(
+                                            future:
+                                                valu.getManfuctureType(chose1!),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) {
+                                                List sup =
+                                                    snapshot.data as List;
 
+                                                return SizedBox(
+                                                  width:
+                                                      getProportionateScreenWidth(
+                                                          40),
+                                                  height: 75,
+                                                  child: DropdownSearch<String>(
+                                                    popupProps: PopupProps.menu(
+                                                      showSelectedItems: true,
+                                                      showSearchBox: true,
+                                                      searchFieldProps:
+                                                          TextFieldProps(
+                                                              cursorColor:
+                                                                  ColorManager
+                                                                      .primary),
+                                                      // disabledItemFn:
+                                                      //     (String s) =>
+                                                      //         s.startsWith('I'),
+                                                    ),
+                                                    items: List.generate(
+                                                        sup.length,
+                                                        (index) => sup[index]
+                                                            ['productname']),
+                                                    dropdownDecoratorProps:
+                                                        const DropDownDecoratorProps(
+                                                      dropdownSearchDecoration:
+                                                          InputDecoration(
+                                                        hintText: "اسم المنتج",
+                                                      ),
+                                                    ),
+                                                    onChanged: (v) async {
+                                                      //print(v);
+                                                      QuerySnapshot qn =
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "manufacturing")
+                                                              .doc(v)
+                                                              .collection(
+                                                                  "billofmaterial")
+                                                              .get();
 
-                                          return SizedBox(
-                                            width:
-                                            getProportionateScreenWidth(
-                                                40),
-                                            height: 75,
-                                            child:
-                                            DropdownSearch<String>(
-                                              popupProps:
-                                              PopupProps.menu(
-                                                showSelectedItems: true,
-                                                showSearchBox: true,
-                                                searchFieldProps:
-                                                TextFieldProps(
-                                                    cursorColor:
-                                                    ColorManager
-                                                        .primary),
-                                                // disabledItemFn:
-                                                //     (String s) =>
-                                                //         s.startsWith('I'),
-                                              ),
-                                              items: List.generate(
-                                                  sup.length,
-                                                      (index) => sup[index]['productname']),
-                                              dropdownDecoratorProps:
-                                              const DropDownDecoratorProps(
-                                                dropdownSearchDecoration:
-                                                InputDecoration(
-                                                  hintText: "اسم المنتج",
-                                                ),
-                                              ),
-                                              onChanged: (v) async {
-                                                print(v);
-                                                QuerySnapshot qn = await  FirebaseFirestore
-                                                    .instance.collection("manufacturing").doc(v).collection("billofmaterial").get();
-
-                                                await FirebaseFirestore
-                                                    .instance
-                                                    .collection("manufacturing")
-                                                    .doc(v)
-                                                    .get()
-                                                    .then((value) {
-
-                                                  setState(() {
-                                                    controller3.text = v!;
-                                                    items = qn.docs;
-                                                    totalPrice = value['totalCost'];
-                                                    print(totalPrice.toString());
-                                                  });
-
-                                                });
-
-
-                                              },
-                                            ),
-                                          );
-                                        } else {
-                                          return const CircularProgressIndicator();
-                                        }
-                                      });
-                                },
-                              )
-                                  :Container(),
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              "manufacturing")
+                                                          .doc(v)
+                                                          .get()
+                                                          .then((value) {
+                                                        setState(() {
+                                                          controller3.text = v!;
+                                                          items = qn.docs;
+                                                          totalPrice = value[
+                                                              'totalCost'];
+                                                          //print(totalPrice.toString());
+                                                        });
+                                                      });
+                                                    },
+                                                  ),
+                                                );
+                                              } else {
+                                                return const CircularProgressIndicator();
+                                              }
+                                            });
+                                      },
+                                    )
+                                  : Container(),
                               SizedBox(
                                 width: getProportionateScreenWidth(20),
                               ),
@@ -226,7 +231,10 @@ class _ConfirmIndusState extends State<ConfirmIndus> {
                                 height: getProportionateScreenHeight(90),
                                 padding: const EdgeInsets.only(top: 35),
                                 child: dropDown(
-                                  const ['مخزن منتج تحت التشغيل', 'مخزن منتج تام'],
+                                  const [
+                                    'مخزن منتج تحت التشغيل',
+                                    'مخزن منتج تام'
+                                  ],
                                   selectTalab: chose1,
                                   onchanged: () => (val) {
                                     setState(() {
@@ -347,14 +355,16 @@ class _ConfirmIndusState extends State<ConfirmIndus> {
                             color: ColorManager.white,
                             title: 'تاكيد',
                             onTap: () {
-
-                              if(chose2 !=null || chose2 !=""){
-                                pro.addManufacturingOrder("ADMIN", chose2!, controller3.text, chose1!, int.parse(controller2.text), finalPrice,items);
-                              }
-                                else{
-
-                              }
-
+                              if (chose2 != null || chose2 != "") {
+                                pro.addManufacturingOrder(
+                                    "ADMIN",
+                                    chose2!,
+                                    controller3.text,
+                                    chose1!,
+                                    int.parse(controller2.text),
+                                    finalPrice,
+                                    items);
+                              } else {}
                             },
                             bgColor: ColorManager.primary,
                           ),
