@@ -45,11 +45,7 @@ class _PayrollState extends State<Payroll> {
   DateTime orderDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: orderDate,
-        firstDate: DateTime(2015),
-        lastDate: DateTime(2050));
+    final DateTime? pickedDate = await showDatePicker(context: context, initialDate: orderDate, firstDate: DateTime(2015), lastDate: DateTime(2050));
     if (pickedDate != null && pickedDate != orderDate) {
       setState(() {
         orderDate = pickedDate;
@@ -84,8 +80,7 @@ class _PayrollState extends State<Payroll> {
                           ),
                           DefaultContainer(title: 'صرف المرتبات'),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 10.0, left: 16, right: 16),
+                            padding: const EdgeInsets.only(top: 10.0, left: 16, right: 16),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -93,8 +88,7 @@ class _PayrollState extends State<Payroll> {
                                   children: [
                                     Text(
                                       ' التاريخ',
-                                      style: getSemiBoldStyle(
-                                          color: ColorManager.black),
+                                      style: getSemiBoldStyle(color: ColorManager.black),
                                     ),
                                     const SizedBox(
                                       height: 10,
@@ -104,10 +98,7 @@ class _PayrollState extends State<Payroll> {
                                       height: 60,
                                       child: ElevatedButton(
                                         onPressed: () => _selectDate(context),
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.white)),
+                                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
                                         child: Text(
                                           "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
                                           style: const TextStyle(
@@ -263,9 +254,7 @@ class _PayrollState extends State<Payroll> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width <= 500
-                                    ? getProportionateScreenWidth(65)
-                                    : getProportionateScreenWidth(43),
+                                width: MediaQuery.of(context).size.width <= 500 ? getProportionateScreenWidth(65) : getProportionateScreenWidth(43),
                                 height: getProportionateScreenHeight(90),
                                 padding: const EdgeInsets.only(top: 35),
                                 child: dropDown(
@@ -322,27 +311,32 @@ class _PayrollState extends State<Payroll> {
                             color: Colors.white,
                             title: 'صرف',
                             onTap: () async {
-                              await pro.salaries(
-                                name: controller2.text,
-                                monthSalary:
-                                    int.parse(controller1.text).toDouble(),
-                                totalSalary:
-                                    int.parse(controller5.text).toDouble(),
-                                fromTreasury: selectTalab ?? '',
-                                residual:
-                                    int.parse(controller3.text).toDouble(),
-                                salaryOrLoan:
-                                    int.parse(controller4.text).toDouble(),
-                                salaryDisbursementAmount:
-                                    int.parse(controller6.text).toDouble(),
-                              );
-                              controller1.clear();
-                              controller2.clear();
-                              controller3.clear();
-                              controller4.clear();
-                              controller5.clear();
-                              controller6.clear();
-                              
+                              if (((int.parse(controller1.text) + 1) == orderDate.month) ||
+                                  ((int.parse(controller1.text)) == 12) && orderDate.month == 1) {
+                                
+                                await pro.salaries(
+                                  name: controller2.text,
+                                  monthSalary: int.parse(controller1.text).toDouble(),
+                                  totalSalary: int.parse(controller5.text).toDouble(),
+                                  fromTreasury: selectTalab ?? '',
+                                  residual: int.parse(controller3.text).toDouble(),
+                                  salaryOrLoan: int.parse(controller4.text).toDouble(),
+                                  salaryDisbursementAmount: int.parse(controller6.text).toDouble(),
+                                );
+                                controller1.clear();
+                                controller2.clear();
+                                controller3.clear();
+                                controller4.clear();
+                                controller5.clear();
+                                controller6.clear();
+                              } else {
+                                const snackBar = SnackBar(
+                                  content: Text('هنالك خطأ في خانة (راتب شهر)'),
+//
+                                );
+
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              }
                             },
                           )
                         ],

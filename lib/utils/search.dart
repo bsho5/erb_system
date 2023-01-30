@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-List<String> search(String searchWord, Map<String, Map<String, dynamic>> result,
-    Timestamp startDate, Timestamp endDate) {
+List<String> search(String searchWord, Map<String, Map<String, dynamic>> result, Timestamp startDate, Timestamp endDate) {
   List<String> dataId = [];
   result.forEach((key, value) {
     if (value.values.any((v) => v.toString().contains(searchWord)) &&
@@ -83,12 +82,9 @@ List<String> categoryFilter({
 Future<bool> compareTreasury(String treasury, int amount) async {
   bool compareTreasury = true;
   Map<String, Map<String, dynamic>> resultAfterRemove = {};
-  await FirebaseFirestore.instance
-      .collection('treasuryactions')
-      .get()
-      .then((value) => value.docs.forEach((element) {
-            resultAfterRemove[element.id] = element.data();
-          }));
+  await FirebaseFirestore.instance.collection('treasuryactions').get().then((value) => value.docs.forEach((element) {
+        resultAfterRemove[element.id] = element.data();
+      }));
   resultAfterRemove.forEach((key, value) {
     if (value.values.any((v) => v.toString().contains(treasury))) {
       if (resultAfterRemove[key]?['balance'] < amount) {
@@ -100,11 +96,18 @@ Future<bool> compareTreasury(String treasury, int amount) async {
   return compareTreasury;
 }
 
+List<String> hrSearch(String searchWord, Map<String, Map<String, dynamic>> result, int month) {
+
+  List<String> dataId = [];
+  result.forEach((key, value) {
+    if (value.values.any((v) => v.toString().contains(searchWord)) && (((value['date'])as Timestamp).toDate().month).compareTo(month) == 0) {
+      dataId.add(key);
+    } 
+  });
+  return dataId;
+}
+
 extension StringCasingExtension on String {
-  String toCapitalized() =>
-      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
-  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
-      .split(' ')
-      .map((str) => str.toCapitalized())
-      .join(' ');
+  String toCapitalized() => length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
 }

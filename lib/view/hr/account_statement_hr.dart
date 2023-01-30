@@ -12,6 +12,7 @@ import 'package:erb_system/view/home/components/default_table.dart';
 import 'package:erb_system/view/home/components/drop_down.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AccountStatement extends StatefulWidget {
   const AccountStatement({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _AccountStatementState extends State<AccountStatement> {
   int? selectedIndex;
   TextEditingController controller1 = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-
+  String? month;
   DateTime orderDate = DateTime.now();
 
   List data = [
@@ -62,11 +63,7 @@ class _AccountStatementState extends State<AccountStatement> {
   ];
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: orderDate,
-        firstDate: DateTime(2015),
-        lastDate: DateTime(2050));
+    final DateTime? pickedDate = await showDatePicker(context: context, initialDate: orderDate, firstDate: DateTime(2015), lastDate: DateTime(2050));
     if (pickedDate != null && pickedDate != orderDate) {
       setState(() {
         orderDate = pickedDate;
@@ -80,9 +77,9 @@ class _AccountStatementState extends State<AccountStatement> {
   Map<String, Map<String, dynamic>> result = {};
   double total = 0;
 
-  void performSearch(String query) {
+  void performSearch(String query, int date) {
     setState(() {
-      dataId = searchByWord(query, result);
+      dataId = hrSearch(query, result, date);
       print(dataId);
     });
   }
@@ -91,17 +88,14 @@ class _AccountStatementState extends State<AccountStatement> {
     // TODO: implement initState
     super.initState();
     getRevenue();
-    FirebaseFirestore.instance
-        .collection('addemployee')
-        .get()
-        .then((value) => value.docs.forEach((element) {
-              setState(() {
-                result[element.id] = element.data();
+    FirebaseFirestore.instance.collection('addemployee').get().then((value) => value.docs.forEach((element) {
+          setState(() {
+            result[element.id] = element.data();
 
-                dbDataId.add(element.id);
-                dataId.add(element.id);
-              });
-            }));
+            dbDataId.add(element.id);
+            dataId.add(element.id);
+          });
+        }));
   }
 
   @override
@@ -138,8 +132,7 @@ class _AccountStatementState extends State<AccountStatement> {
                                 children: [
                                   Text(
                                     ' البحث',
-                                    style: getSemiBoldStyle(
-                                        color: ColorManager.black),
+                                    style: getSemiBoldStyle(color: ColorManager.black),
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -152,6 +145,9 @@ class _AccountStatementState extends State<AccountStatement> {
                                       perFix: const Icon(Icons.search),
                                       hint: '',
                                       label: '',
+                                      onChanged: (v) {
+                                        performSearch(v.toCapitalized(), int.parse(month??'') );
+                                      },
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -165,38 +161,34 @@ class _AccountStatementState extends State<AccountStatement> {
                               SizedBox(
                                 width: getProportionateScreenWidth(20),
                               ),
-                              Column(
-                                children: [
-                                  Text(
-                                    ' التاريخ',
-                                    style: getSemiBoldStyle(
-                                        color: ColorManager.black),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  SizedBox(
-                                    width: getProportionateScreenWidth(40),
-                                    height: 60,
-                                    child: ElevatedButton(
-                                      onPressed: () => _selectDate(context),
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.white)),
-                                      child: Text(
-                                        "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: getProportionateScreenWidth(20),
-                              ),
+                              // Column(
+                              //   children: [
+                              //     Text(
+                              //       ' التاريخ',
+                              //       style: getSemiBoldStyle(color: ColorManager.black),
+                              //     ),
+                              //     const SizedBox(
+                              //       height: 10,
+                              //     ),
+                              //     SizedBox(
+                              //       width: getProportionateScreenWidth(40),
+                              //       height: 60,
+                              //       child: ElevatedButton(
+                              //         onPressed: () => _selectDate(context),
+                              //         style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
+                              //         child: Text(
+                              //           "${orderDate.year.toString()}/${orderDate.month.toString().padLeft(2, '0')}/${orderDate.day.toString().padLeft(2, '0')}",
+                              //           style: const TextStyle(
+                              //             color: Colors.black,
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              // SizedBox(
+                              //   width: getProportionateScreenWidth(20),
+                              // ),
                               Column(
                                 children: [
                                   Text(
@@ -212,6 +204,11 @@ class _AccountStatementState extends State<AccountStatement> {
                                     child: DefaultInputForm(
                                       hint: '',
                                       label: '',
+                                      onChanged: (v) {
+                                        setState(() {
+                                          month = v;
+                                        });
+                                      },
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -240,18 +237,13 @@ class _AccountStatementState extends State<AccountStatement> {
                                       (index) => Column(
                                             children: [
                                               SizedBox(
-                                                  width:
-                                                      getProportionateScreenWidth(
-                                                          40),
+                                                  width: getProportionateScreenWidth(40),
                                                   child: dropDown(
                                                     const [
                                                       ' صرف المرتب',
                                                       ' صرف سلفة ',
                                                     ],
-                                                    selectTalab:
-                                                        index == selectedIndex
-                                                            ? chose1
-                                                            : chose2,
+                                                    selectTalab: index == selectedIndex ? chose1 : chose2,
                                                     onchanged: () => (val) {
                                                       setState(() {
                                                         selectedIndex = index;
@@ -260,10 +252,8 @@ class _AccountStatementState extends State<AccountStatement> {
                                                     },
                                                     label: 'خيارات',
                                                     foColor: Colors.white,
-                                                    bgColor:
-                                                        ColorManager.primary,
-                                                    dpColor:
-                                                        ColorManager.primary,
+                                                    bgColor: ColorManager.primary,
+                                                    dpColor: ColorManager.primary,
                                                   )),
                                               const SizedBox(
                                                 height: 10,
@@ -272,106 +262,79 @@ class _AccountStatementState extends State<AccountStatement> {
                                           )),
                                 ),
                               ),
-                              DefaultTable(
-                                  columnData: columnData,
-                                  size: getProportionateScreenWidth(15),
-                                  color: ColorManager.second,
-                                  rows: [
-                                    ...dataId
-                                        .map((data) => DataRow(cells: [
-                                              DataCell(Text(
-                                                result[data]!['variableSalary']
-                                                    .toString(),
-                                                style: style,
-                                              )),
-                                              DataCell(Text(
-                                                result[data]!['loan']
-                                                    .toString(),
-                                                style: style,
-                                              )),
-                                              DataCell(Text(
-                                                result[data]!['totalSalary']
-                                                    .toString(),
-                                                style: style,
-                                              )),
-                                              DataCell(Text(
-                                                result[data]!['date'],
-                                                style: style,
-                                              )),
-                                              DataCell(Text(
-                                                result[data]!['level'],
-                                                style: style,
-                                              )),
-                                              DataCell(Text(
-                                                result[data]!['department'],
-                                                style: style,
-                                              )),
-                                              DataCell(Text(
-                                                result[data]!['name'],
-                                                style: style,
-                                              )),
-                                            ]))
-                                        .toList(),
-                                    DataRow(
-                                        color: MaterialStateProperty.all(
-                                            ColorManager.primary),
-                                        cells: [
+                              DefaultTable(columnData: columnData, size: getProportionateScreenWidth(15), color: ColorManager.second, rows: [
+                                ...dataId
+                                    .map((data) => DataRow(cells: [
                                           DataCell(Text(
-                                            " 25000",
-                                            style: TextStyle(
-                                                color: ColorManager.white,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        5),
-                                                fontWeight: FontWeight.w800),
-                                          )),
-                                          DataCell(Text(
-                                            " 2500",
-                                            style: TextStyle(
-                                                color: ColorManager.white,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        5),
-                                                fontWeight: FontWeight.w800),
-                                          )),
-                                          DataCell(Text(
-                                            " 250000",
-                                            style: TextStyle(
-                                                color: ColorManager.white,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        5),
-                                                fontWeight: FontWeight.w800),
-                                          )),
-                                          DataCell(Text(
-                                            '',
+                                            result[data]!['variableSalary'].toString(),
                                             style: style,
                                           )),
                                           DataCell(Text(
-                                            '',
+                                            result[data]!['loan'].toString(),
                                             style: style,
                                           )),
                                           DataCell(Text(
-                                            '',
+                                            result[data]!['totalSalary'].toString(),
                                             style: style,
                                           )),
-                                          DataCell(
-                                              Container(
-                                                color: ColorManager.primary,
-                                                child: Text(
-                                                  'الاجمالي',
-                                                  style: TextStyle(
-                                                      color: ColorManager.white,
-                                                      fontSize:
-                                                          getProportionateScreenWidth(
-                                                              5),
-                                                      fontWeight:
-                                                          FontWeight.w800),
-                                                ),
-                                              ),
-                                              placeholder: true),
-                                        ])
-                                  ]),
+                                          DataCell(Text(
+                                            DateFormat('yyyy-MM-dd').format(((result[data]?['date']) as Timestamp).toDate()).toString(),
+                                            style: style,
+                                          )),
+                                          DataCell(Text(
+                                            result[data]!['level'],
+                                            style: style,
+                                          )),
+                                          DataCell(Text(
+                                            result[data]!['department'],
+                                            style: style,
+                                          )),
+                                          DataCell(Text(
+                                            result[data]!['name'],
+                                            style: style,
+                                          )),
+                                        ]))
+                                    .toList(),
+                                DataRow(color: MaterialStateProperty.all(ColorManager.primary), cells: [
+                                  DataCell(Text(
+                                    " 25000",
+                                    style:
+                                        TextStyle(color: ColorManager.white, fontSize: getProportionateScreenWidth(5), fontWeight: FontWeight.w800),
+                                  )),
+                                  DataCell(Text(
+                                    " 2500",
+                                    style:
+                                        TextStyle(color: ColorManager.white, fontSize: getProportionateScreenWidth(5), fontWeight: FontWeight.w800),
+                                  )),
+                                  DataCell(Text(
+                                    " 250000",
+                                    style:
+                                        TextStyle(color: ColorManager.white, fontSize: getProportionateScreenWidth(5), fontWeight: FontWeight.w800),
+                                  )),
+                                  DataCell(Text(
+                                    '',
+                                    style: style,
+                                  )),
+                                  DataCell(Text(
+                                    '',
+                                    style: style,
+                                  )),
+                                  DataCell(Text(
+                                    '',
+                                    style: style,
+                                  )),
+                                  DataCell(
+                                      Container(
+                                        color: ColorManager.primary,
+                                        child: Text(
+                                          'الاجمالي',
+                                          style: TextStyle(
+                                              color: ColorManager.white, fontSize: getProportionateScreenWidth(5), fontWeight: FontWeight.w800),
+                                        ),
+                                      ),
+                                      placeholder: true),
+                                ])
+                              ]),
                             ],
                           ),
                           const SizedBox(

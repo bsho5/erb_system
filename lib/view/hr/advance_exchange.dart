@@ -1,3 +1,4 @@
+import 'package:erb_system/controller/hr_controller/hr_controller.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
@@ -5,6 +6,7 @@ import 'package:erb_system/view/home/components/default_container.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../size_config.dart';
 import '../auth/component/text_fom_feild.dart';
@@ -61,6 +63,7 @@ class _AdvanceExchangeState extends State<AdvanceExchange> {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     TextStyle style = TextStyle(fontSize: getProportionateScreenWidth(5));
+    var pro = Provider.of<AddHRController>(context);
     // var format = DateFormat.yMd('ar');
 
     return Scaffold(
@@ -321,7 +324,34 @@ class _AdvanceExchangeState extends State<AdvanceExchange> {
                             bgColor: Colors.black,
                             color: Colors.white,
                             title: 'صرف',
-                            onTap: () {},
+                            onTap: () async {
+                              if (((int.parse(controller1.text) + 1) == orderDate.month) ||
+                                  (((int.parse(controller1.text)) == 12) && orderDate.month == 1)||((int.parse(controller1.text) ) == orderDate.month) ) {
+                                
+                                await pro.salaries(
+                                  name: controller2.text,
+                                  monthSalary: int.parse(controller1.text).toDouble(),
+                                  totalSalary: int.parse(controller5.text).toDouble(),
+                                  fromTreasury: selectTalab ?? '',
+                                  residual: int.parse(controller3.text).toDouble(),
+                                  salaryOrLoan: int.parse(controller4.text).toDouble(),
+                                  salaryDisbursementAmount: int.parse(controller6.text).toDouble(),
+                                );
+                                controller1.clear();
+                                controller2.clear();
+                                controller3.clear();
+                                controller4.clear();
+                                controller5.clear();
+                                controller6.clear();
+                              } else {
+                                const snackBar = SnackBar(
+                                  content: Text('هنالك خطأ في خانة (راتب شهر)'),
+//
+                                );
+
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              }
+                            },
                           )
                         ],
                       ),
