@@ -349,7 +349,7 @@ class _TalabatState extends State<Talabat> {
                                   child: DropdownSearch<String>(
                                     clearButtonProps:
                                         const ClearButtonProps(isVisible: true),
-                                    popupProps: PopupProps.menu(
+                                    popupProps: const PopupProps.menu(
                                       showSearchBox: true,
                                       showSelectedItems: true,
                                       // disabledItemFn: (String s) =>
@@ -357,7 +357,7 @@ class _TalabatState extends State<Talabat> {
                                     ),
                                     items: governorates,
                                     dropdownDecoratorProps:
-                                        DropDownDecoratorProps(
+                                        const DropDownDecoratorProps(
                                       dropdownSearchDecoration: InputDecoration(
                                           hintText: "المحافظة",
                                           border: InputBorder.none),
@@ -399,7 +399,7 @@ class _TalabatState extends State<Talabat> {
                                               governorateMain ?? '') ??
                                           [],
                                       dropdownDecoratorProps:
-                                          DropDownDecoratorProps(
+                                          const DropDownDecoratorProps(
                                         dropdownSearchDecoration:
                                             InputDecoration(
                                                 hintText: "المدينة",
@@ -528,13 +528,13 @@ class _TalabatState extends State<Talabat> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 40),
                                     decoration: BoxDecoration(
-                                      color: Color(0xff82225E),
+                                      color: const Color(0xff82225E),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     child: Row(
                                       children: [
                                         TextButton(
-                                          child: Text(
+                                          child: const Text(
                                             'فلترة',
                                             style:
                                                 TextStyle(color: Colors.white),
@@ -557,7 +557,7 @@ class _TalabatState extends State<Talabat> {
                                           },
                                         ),
                                         IconButton(
-                                          icon: Icon(Icons.close,
+                                          icon: const Icon(Icons.close,
                                               color: Colors.white),
                                           onPressed: () {
                                             setState(() {
@@ -740,7 +740,7 @@ class _TalabatState extends State<Talabat> {
                                                                           "orderstatus"] ==
                                                                       "تم شحن") {
                                                                 final snackBar =
-                                                                    SnackBar(
+                                                                    const SnackBar(
                                                                   content: Text(
                                                                       'Order already confirmed '),
                                                                 );
@@ -842,7 +842,7 @@ class _TalabatState extends State<Talabat> {
                                                                       "orderstatus"] ==
                                                                   "تم شحن") {
                                                                 final snackBar =
-                                                                    SnackBar(
+                                                                    const SnackBar(
                                                                   content: Text(
                                                                       'Order already shipped '),
                                                                 );
@@ -953,7 +953,7 @@ class _TalabatState extends State<Talabat> {
                                                         ),
                                                         PopupMenuItem(
                                                           value: 4,
-                                                          child: Text(
+                                                          child: const Text(
                                                               'صيانه الطلب'),
                                                           onTap: () {
                                                             QR.to('/OrderShip');
@@ -961,7 +961,7 @@ class _TalabatState extends State<Talabat> {
                                                         ),
                                                         PopupMenuItem(
                                                           value: 5,
-                                                          child: Text(
+                                                          child: const Text(
                                                               'تحصيل الطلب'),
                                                           onTap: () {
                                                             QR.to(
@@ -970,7 +970,7 @@ class _TalabatState extends State<Talabat> {
                                                         ),
                                                         PopupMenuItem(
                                                           value: 5,
-                                                          child: Text(
+                                                          child: const Text(
                                                               'تفاصيل تحصيل الطلب'),
                                                           onTap: () {
                                                             QR.to(
@@ -979,7 +979,7 @@ class _TalabatState extends State<Talabat> {
                                                         ),
                                                         PopupMenuItem(
                                                           value: 6,
-                                                          child: Text(
+                                                          child: const Text(
                                                               'رفض استلام'),
                                                           onTap: () {
                                                             setState(() {
@@ -1404,7 +1404,7 @@ class _TalabatState extends State<Talabat> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Icon(Icons.more_horiz),
+                                        const Icon(Icons.more_horiz),
                                         Text(
                                           'يرجي توضيح سبب رفض الاستلام',
                                           style: style,
@@ -1447,12 +1447,12 @@ class _TalabatState extends State<Talabat> {
                                   vertical: 10, horizontal: 40),
                               decoration: BoxDecoration(
                                 color: ordersNumber < dataId.length
-                                    ? Color(0xff82225E)
+                                    ? const Color(0xff82225E)
                                     : Colors.grey,
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: TextButton(
-                                child: Text(
+                                child: const Text(
                                   'المزيد',
                                   style: TextStyle(color: Colors.white),
                                 ),
@@ -1473,12 +1473,12 @@ class _TalabatState extends State<Talabat> {
                                         vertical: 10, horizontal: 40),
                                     decoration: BoxDecoration(
                                       color: ordersNumber < dataId.length
-                                          ? Color(0xff82225E)
+                                          ? const Color(0xff82225E)
                                           : Colors.grey,
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     child: TextButton(
-                                      child: Text(
+                                      child: const Text(
                                         'اقل',
                                         style: TextStyle(color: Colors.white),
                                       ),
@@ -1489,7 +1489,7 @@ class _TalabatState extends State<Talabat> {
                                       },
                                     )),
                               )
-                            : SizedBox(),
+                            : const SizedBox(),
                       ],
                     ),
                     const SizedBox(

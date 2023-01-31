@@ -97,14 +97,37 @@ Future<bool> compareTreasury(String treasury, int amount) async {
 }
 
 List<String> hrSearch(String searchWord, Map<String, Map<String, dynamic>> result, int month) {
-
   List<String> dataId = [];
   result.forEach((key, value) {
-    if (value.values.any((v) => v.toString().contains(searchWord)) && (((value['date'])as Timestamp).toDate().month).compareTo(month) == 0) {
+    if (value.values.any((v) => v.toString().contains(searchWord)) && (((value['date']) as Timestamp).toDate().month).compareTo(month) == 0) {
       dataId.add(key);
-    } 
+    }
   });
   return dataId;
+}
+
+Future<List<Map<String, dynamic>>> hrFilter(String month) async {
+  List<Map<String, dynamic>> employee = [];
+  await FirebaseFirestore.instance.collection('salaries').get().then((value) => value.docs.forEach((element) {
+        //  print(element.data());
+        if (element.data()['monthSalary'] != int.parse(month)) {
+          employee.add(element.data());
+        }
+      }));
+  return employee;
+}
+
+Future<Map<String, dynamic>> hrNameFilter(String name) async {
+  Map<String, dynamic> employee = {};
+  // print(name);
+  await FirebaseFirestore.instance.collection('salaries').get().then((value) => value.docs.forEach((element) {
+        // print(element.data()['name']);
+        if (element.data()['name'] == name) {
+          employee = element.data();
+          // print(employee);
+        }
+      }));
+  return employee;
 }
 
 extension StringCasingExtension on String {

@@ -1,7 +1,10 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:erb_system/controller/hr_controller/hr_controller.dart';
 import 'package:erb_system/resources/assets_manager.dart';
 import 'package:erb_system/resources/color_manger.dart';
 import 'package:erb_system/resources/style_manager.dart';
+import 'package:erb_system/resources/value_manager.dart';
+import 'package:erb_system/utils/city.dart';
 import 'package:erb_system/view/home/components/appBar.dart';
 import 'package:erb_system/view/home/components/default_container.dart';
 import 'package:erb_system/view/home/drop_down_par.dart';
@@ -37,12 +40,20 @@ class _PayrollState extends State<Payroll> {
   String? payment;
   String? city;
   String? typeCustomer;
-
+  String? month = '';
   String? governorate;
   String? numLine1;
   String? typeOrder;
   String? order;
+  String? name = '';
+  String? selectedName;
+  String? selectedMonth;
   DateTime orderDate = DateTime.now();
+  Map<String, dynamic> employeeData = {
+    'residual': '',
+    'salaryOrLoan': '',
+    'totalSalary': '',
+  };
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(context: context, initialDate: orderDate, firstDate: DateTime(2015), lastDate: DateTime(2050));
@@ -51,6 +62,19 @@ class _PayrollState extends State<Payroll> {
         orderDate = pickedDate;
       });
     }
+  }
+
+  Future<void> data() async {
+    employeeData = await info(name ?? '');
+    controller3.text = (employeeData['residual'].toString());
+    controller4.text = (employeeData['salaryOrLoan'].toString());
+    controller5.text = (employeeData['totalSalary'].toString());
+    // if (employeeData == {}) {
+    //   controller1.text = '';
+    //   controller2.text = '';
+    //   controller3.text = '';
+    // }
+    // print('employee data ' + employeeData['residual'].toString());
   }
 
   @override
@@ -109,54 +133,115 @@ class _PayrollState extends State<Payroll> {
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      'راتب شهر',
-                                      style: style,
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    SizedBox(
-                                      width: getProportionateScreenWidth(40),
-                                      height: 60,
-                                      child: DefaultInputForm(
-                                        hint: '',
-                                        label: '',
-                                        onTab: () {},
-                                        validate: () {},
-                                        onSave: () {},
-                                        passFun: () {},
-                                        color: Colors.white70,
-                                        obscureText: false,
-                                        controller: controller1,
+                                FutureBuilder(
+                                    future: Future.wait([employeeMonths(month ?? ''), data()]),
+                                    builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+                                      final employeesList = snapshot.data?[0] ?? [''];
+                                      return SizedBox(
+                                        width: MediaQuery.of(context).size.width <= 880
+                                            ? getProportionateScreenWidth(75)
+                                            : getProportionateScreenWidth(43),
+                                        height: getProportionateScreenHeight(50),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                width: 1.2,
+                                              ),
+                                              borderRadius: BorderRadius.circular(AppSize.s15)),
+                                          child: Center(
+                                            child: DropdownSearch<String>(
+                                              clearButtonProps: const ClearButtonProps(isVisible: true),
+                                              popupProps: const PopupProps.menu(
+                                                showSearchBox: true,
+                                                showSelectedItems: true,
+                                                // searchFieldProps: TextFieldProps(cursorColor: ColorManager.primary),
+                                                // disabledItemFn: (String s) =>
+                                                //     s.startsWith('I'),
+                                              ),
+                                              items: employeesList,
+                                              selectedItem: selectedName,
+                                              dropdownDecoratorProps: const DropDownDecoratorProps(
+                                                dropdownSearchDecoration: InputDecoration(hintText: 'الاسم', border: InputBorder.none),
+                                              ),
+                                              onChanged: (v) {
+                                                setState(() {
+                                                  selectedName = v;
+                                                  name = v;
+                                                  data();
+                                                  employeeData;
+                                                  // employeeData = snapshot.data?[1];
+                                                  // print(employeeData);
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                // SizedBox(
+                                //   width: MediaQuery.of(context).size.width <= 880 ? getProportionateScreenWidth(75) : getProportionateScreenWidth(43),
+                                //   height: getProportionateScreenHeight(50),
+                                //   child: Container(
+                                //     padding: const EdgeInsets.symmetric(horizontal: 20),
+                                //     decoration: BoxDecoration(
+                                //         border: Border.all(width: 3, color: const Color(0xff82225E)), borderRadius: BorderRadius.circular(10)),
+                                //     child: Center(
+                                //       child: DropdownSearch<String>(
+                                //         clearButtonProps: const ClearButtonProps(isVisible: true),
+                                //         popupProps: PopupProps.menu(
+                                //           showSearchBox: true,
+                                //           showSelectedItems: true,
+                                //           searchFieldProps: TextFieldProps(cursorColor: ColorManager.primary),
+                                //           // disabledItemFn: (String s) =>
+                                //           //     s.startsWith('I'),
+                                //         ),
+                                //         items: employeeMonths(month ?? ''),
+                                //         dropdownDecoratorProps: const DropDownDecoratorProps(
+                                //           dropdownSearchDecoration: InputDecoration(hintText: 'الاسم', border: InputBorder.none),
+                                //         ),
+                                //         onChanged: (v) {
+                                //           setState(() {
+                                //             // cityMain = v!;
+                                //           });
+                                //         },
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width <= 880 ? getProportionateScreenWidth(75) : getProportionateScreenWidth(43),
+                                  height: getProportionateScreenHeight(50),
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1.2,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Text('الاسم', style: style),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    SizedBox(
-                                      width: getProportionateScreenWidth(50),
-                                      height: 60,
-                                      child: DefaultInputForm(
-                                        controller: controller2,
-                                        hint: '',
-                                        label: '',
-                                        onTab: () {},
-                                        validate: () {},
-                                        onSave: () {},
-                                        passFun: () {},
-                                        color: Colors.white70,
-                                        obscureText: false,
+                                      borderRadius: BorderRadius.circular(AppSize.s15)),
+                                  child: Center(
+                                    child: DropdownSearch<String>(
+                                      clearButtonProps: const ClearButtonProps(isVisible: true),
+                                      popupProps: const PopupProps.menu(
+                                        showSearchBox: true,
+                                        showSelectedItems: true,
+                                        // disabledItemFn: (String s) =>
+                                        //     s.startsWith('I'),
                                       ),
+                                      selectedItem: selectedMonth,
+                                      items: months,
+                                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                                        dropdownSearchDecoration: InputDecoration(hintText: 'راتب الشهر', border: InputBorder.none),
+                                      ),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          selectedMonth = v;
+                                          selectedName = null;
+                                          name = null;
+                                          month = v!;
+                                        });
+                                      },
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -180,8 +265,9 @@ class _PayrollState extends State<Payroll> {
                                     width: getProportionateScreenWidth(40),
                                     height: 60,
                                     child: DefaultInputForm(
-                                      hint: '',
+                                      hint: employeeData['residual'].toString() == 'null' ? '' : employeeData['residual'].toString(),
                                       label: '',
+                                      readOnly: true,
                                       onTab: () {},
                                       validate: () {},
                                       onSave: () {},
@@ -206,7 +292,8 @@ class _PayrollState extends State<Payroll> {
                                     width: getProportionateScreenWidth(40),
                                     height: 60,
                                     child: DefaultInputForm(
-                                      hint: '',
+                                      hint: employeeData['salaryOrLoan'].toString(),
+                                      readOnly: true,
                                       label: '',
                                       onTab: () {},
                                       validate: () {},
@@ -232,7 +319,8 @@ class _PayrollState extends State<Payroll> {
                                     width: getProportionateScreenWidth(40),
                                     height: 60,
                                     child: DefaultInputForm(
-                                      hint: '',
+                                      hint: employeeData['totalSalary'].toString(),
+                                      readOnly: true,
                                       label: '',
                                       onTab: () {},
                                       validate: () {},
@@ -311,12 +399,12 @@ class _PayrollState extends State<Payroll> {
                             color: Colors.white,
                             title: 'صرف',
                             onTap: () async {
-                              if (((int.parse(controller1.text) + 1) == orderDate.month) ||
-                                  ((int.parse(controller1.text)) == 12) && orderDate.month == 1) {
-                                
-                                await pro.salaries(
-                                  name: controller2.text,
-                                  monthSalary: int.parse(controller1.text).toDouble(),
+                              // if (((int.parse(selectedMonth??'') + 1) == orderDate.month) ||
+                              //     ((int.parse(selectedMonth??'')) == 12) && orderDate.month == 1) {
+                                if (int.parse(controller6.text)<int.parse(controller3.text)) {
+                                  await pro.salaries(
+                                  name: selectedName ?? '',
+                                  monthSalary: int.parse(selectedMonth??'').toDouble(),
                                   totalSalary: int.parse(controller5.text).toDouble(),
                                   fromTreasury: selectTalab ?? '',
                                   residual: int.parse(controller3.text).toDouble(),
@@ -329,14 +417,23 @@ class _PayrollState extends State<Payroll> {
                                 controller4.clear();
                                 controller5.clear();
                                 controller6.clear();
-                              } else {
-                                const snackBar = SnackBar(
-                                  content: Text('هنالك خطأ في خانة (راتب شهر)'),
+                                }else{
+                                  const snackBar = SnackBar(
+                                  content: Text('المبلغ اكبر من المتبقي'),
 //
                                 );
 
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              }
+                                }
+                                
+//                               } else {
+//                                 const snackBar = SnackBar(
+//                                   content: Text('هنالك خطأ في خانة (راتب شهر)'),
+// //
+//                                 );
+
+//                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
+//                               }
                             },
                           )
                         ],

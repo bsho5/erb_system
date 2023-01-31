@@ -45,6 +45,7 @@ class DefaultInputForm extends StatelessWidget {
       onSaved: onSave(),
       onChanged: onChanged,
       decoration: InputDecoration(
+        hintText: hint,
         hintStyle: const TextStyle(fontSize: 14),
         label: Container(
             alignment: Alignment.center,
